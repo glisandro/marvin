@@ -1,0 +1,47 @@
+<?php
+$lang['expenses']='Gastos';
+$lang['expenses_new']='Nuevo Gasto';
+$lang['expenses_category_new']='Nueva Categoria';
+$lang['expenses_cash_new']='Nuevo Retiro en Efectivo';
+$lang['expenses_update']='Actualizar Gasto';
+$lang['expenses_category_update']='Actualizar Categoria';
+$lang['expenses_cash_update']='Actualizar Retiro en Efectivo';
+$lang['expenses_basic_information']='Información del Gasto';
+$lang['expenses_category_basic_information']='Información del Categoria';
+$lang['expenses_date']='Fecha';
+$lang['category_name']='Nombre';
+$lang['expenses_exists']='Existe';
+$lang['expenses_time_required']='Fecha es requerido';
+$lang['nro_receipt_required']='Nro. Comprobante es requerido';
+$lang['category_name_required']='Nombre de categoria es requerido';
+$lang['expenses_number']='Nro. Comprobante';
+$lang['expenses_description']='Descripción';
+$lang['expenses_quantity']='Cantidad';
+$lang['expenses_location']='Tienda';
+$lang['expenses_approved']='Aprobado';
+$lang['expenses_note']='Nota';
+$lang['expenses_error_adding_updating']='Error al agregar/actualizar gasto';
+$lang['expenses_quantity_number']='Cantidad debe ser número';
+$lang['expenses_successful_updating']='Se ha actualizado el gasto ';
+$lang['expenses_successful_adding']='Se ha agregado correctamente el gasto';
+$lang['expenses_category']='Categoria';
+$lang['admin_category']='Administrar Categorias';
+$lang['expenses_successful_deleted']='Se ha borrado correctamente el(los)';
+$lang['category_successful_deleted']='Se ha borrado correctamente la(las)';
+$lang['expenses_one_or_multiple']='gasto(s)';
+$lang['category_one_or_multiple']='categoria(s)';
+$lang['expenses_cannot_be_deleted']='No se pudo borrar a los gastos seleccionados.';
+$lang['category_cannot_be_deleted']='No se pudo borrar a las categorias seleccionadas.';
+$lang['expenses_confirm_delete']='¿Estás seguro(a) de que quieres borrar a los gastos seleccionados?';
+$lang['expenses_category_confirm_delete']='¿Estás seguro(a) de que quieres borrar a las categorias seleccionadas?';
+$lang['category_successful_updating']='Se ha actualizado la categoria ';
+$lang['category_successful_adding']='Se ha agregado correctamente la categoria';
+$lang['category_error_adding_updating']='Error al agregar/actualizar categoria';
+$lang['cash_withdrawal']='Retiro en Efectivo';
+$lang['expenses_cash_error_adding_updating']='Error al agregar/actualizar retiro en efectivo';
+$lang['expenses_cash_successful_updating']='Se ha actualizado el retiro en efectivo ';
+$lang['expenses_cash_successful_adding']='Se ha agregado correctamente el retiro en efectivo';
+$lang['expenses_confirm_print']="¿Desea imprimir recibo del gasto?";
+$lang['expenses_cash_confirm_print']="¿Desea imprimir recibo del retiro en efectivo?";
+
+?>
