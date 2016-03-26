@@ -6,18 +6,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<base href="<?php echo base_url();?>" />
 		<link rel="icon" href="<?php echo base_url();?>favicon.ico" type="image/x-icon"/>
-
+		
 		<?php foreach(get_css_files() as $css_file) { ?>
 			<link rel="stylesheet" rev="stylesheet" href="<?php echo base_url().$css_file['path'].'?'.APPLICATION_VERSION;?>" media="<?php echo $css_file['media'];?>" />
 		<?php } ?>
 		<script type="text/javascript">
 			var SITE_URL= "<?php echo site_url(); ?>";
 		</script>
-
+		
 		<?php foreach(get_js_files() as $js_file) { ?>
 			<script src="<?php echo base_url().$js_file['path'].'?'.APPLICATION_VERSION;?>" type="text/javascript" language="javascript" charset="UTF-8"></script>
-		<?php } ?>
-
+		<?php } ?>	
+		
 		<script type="text/javascript">
 			COMMON_SUCCESS = <?php echo json_encode(lang('common_success')); ?>;
 			COMMON_ERROR = <?php echo json_encode(lang('common_error')); ?>;
@@ -25,7 +25,7 @@
 				cache: false,
 				headers: { "cache-control": "no-cache" }
 			});
-
+			
 			$(document).ready(function()
 			{
 				//Ajax submit current location
@@ -36,12 +36,12 @@
 						window.location.reload(true);
 					});
 				});
-
+				
 				//Keep session alive by sending a request every 5 minutes
 				setInterval(function(){$.get('<?php echo site_url('home/keep_alive'); ?>');}, 300000);
 			});
 		</script>
-
+		
 	</head>
 	<body data-color="grey" class="flat">
 		<div class="modal fade hidden-print" id="myModal"></div>
@@ -53,14 +53,14 @@
 					'class'=>'hidden-print header-log',
 					'id'=>'header-logo',
 
-				)); ?></a></h1>
-				<a id="menu-trigger" href="#"><i class="fa fa-bars fa fa-2x"></i></a>
+				)); ?></a></h1>		
+				<a id="menu-trigger" href="#"><i class="fa fa-bars fa fa-2x"></i></a>	
 		<div class="clear"></div>
 		</div>
-
-
-
-
+		
+		
+		
+		
 		<div id="user-nav" class="hidden-print hidden-xs">
 			<ul class="btn-group ">
 				<li class="btn  hidden-xs"><a title="" href="<?php echo site_url('login/switch_user')?>" data-toggle="modal" data-target="#myModal" ><i class="icon fa fa-user fa-2x"></i> <span class="text">	<?php echo lang('common_welcome')." <b> $user_info->first_name $user_info->last_name! </b>"; ?></span></a></li>
@@ -84,15 +84,15 @@
 				</li>
 			</ul>
 		</div>
-		<?php
+		<?php 
 		$sidebar_class = "";
 		$sales_content_class = "";
-		if ($this->router->fetch_class() == "recerve" || $this->router->fetch_class() == "sales" || $this->router->fetch_class() == "receivings" || ($this->uri->segment(1)== "expenses" && $this->uri->segment(2)== "receipt") || ($this->uri->segment(1)== "expenses" && $this->uri->segment(2)== "cash_receipt")) {
+		if ($this->router->fetch_class() == "sales" || $this->router->fetch_class() == "receivings" || $this->router->fetch_class() == "reserve" || ($this->uri->segment(1)== "expenses" && $this->uri->segment(2)== "receipt") || ($this->uri->segment(1)== "expenses" && $this->uri->segment(2)== "cash_receipt")) {
 			$sidebar_class = "sales_minibar";
 			$sales_content_class = "sales_content_minibar";
 		}?>
 		<div id="sidebar" class="hidden-print minibar <?php echo $sidebar_class?>">
-
+			
 			<ul>
             	<?php if (count($authenticated_locations) > 1) { ?>
 				<li id="location-top" class="location-drops">
@@ -117,7 +117,8 @@
                 </li>
 			</ul>
 		</div>
-
-
-
+        
+       
+        
 		<div id="content"  class="clearfix <?php echo $sales_content_class?>" >
+		

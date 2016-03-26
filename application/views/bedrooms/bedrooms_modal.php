@@ -22,22 +22,7 @@
 				<tr> <td><?php echo lang('bedrooms_description'); ?></td> <td> <?php echo $room_info->description; ?></td></tr>
 			</table>
 			
-			<table class="table table-bordered table-hover table-striped" width="1200px">
-				<tr>
-					<td colspan="2"><h3><?php echo lang('receivings_list_of_suspended'); ?></h3></th>
-				</tr>
-				<tr>
-					<th><?php echo lang('receivings_id');?></th>
-					<th><?php echo lang('bedrooms_quantity');?></th>
-				</tr>
-				
-				<?php foreach($suspended_receivings as $receiving_room) {?>
-					<tr>
-						<td style="text-align: center;"><?php echo anchor('receivings/receipt/'.$receiving_room['receiving_id'], 'RECV '.$receiving_room['receiving_id'], array('target' => '_blank'));?></td>
-						<td style="text-align: center;"><?php echo to_quantity($receiving_room['quantity_purchased']);?></td>
-					</tr>
-				<?php } ?>
-			</table>
+			
 		</div>
 	</div>
 </div>

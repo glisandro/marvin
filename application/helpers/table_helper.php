@@ -21,7 +21,6 @@ function get_bedrooms_manage_table($bedrooms,$controller)
 		$CI->lang->line('bedrooms_cost_price'),
 		$CI->lang->line('bedrooms_unit_price'),
 		$CI->lang->line('bedrooms_quantity'),
-		$CI->lang->line('bedrooms_inventory'),
 		$CI->lang->line('bedrooms_clone'),
 		$CI->lang->line('common_edit'));
 	}
@@ -35,7 +34,6 @@ function get_bedrooms_manage_table($bedrooms,$controller)
 		$CI->lang->line('bedrooms_beds'),
 		$CI->lang->line('bedrooms_unit_price'),
 		$CI->lang->line('bedrooms_quantity'),
-		$CI->lang->line('bedrooms_inventory'),
 		$CI->lang->line('bedrooms_clone'),
 		$CI->lang->line('common_edit'));
 		
@@ -81,7 +79,7 @@ function get_bedrooms_manage_table_data_rows($bedrooms,$controller)
 	
 	if($bedrooms->num_rows()==0)
 	{
-		$table_data_rows.="<tr><td colspan='12'><span class='col-md-12 text-center text-warning' >".lang('bedrooms_no_bedrooms_to_display')."</span></tr>";
+		$table_data_rows.="<tr><td colspan='11'><span class='col-md-12 text-center text-warning' >".lang('bedrooms_no_bedrooms_to_display')."</span></tr>";
 	}
 	
 	return $table_data_rows;
@@ -115,16 +113,16 @@ function get_room_data_row($room,$controller)
 	$table_data_row.='<td width="9%" align="right">'.to_currency($room->location_unit_price ? $room->location_unit_price : $room->unit_price, 10).'</td>';
 	$table_data_row.='<td width="9%">'.to_quantity($room->quantity).'</td>';
 	
-	if (!$room->is_service)
-	{
-		$table_data_row.='<td width="12%">'.anchor($controller_name."/inventory/$room->room_id/", lang('common_inv'),array('class'=>'','title'=>lang($controller_name.'_count'))).'</td>';//inventory details	
+	// if (!$room->is_service)
+	// {
+	// 	$table_data_row.='<td width="12%">'.anchor($controller_name."/inventory/$room->room_id/", lang('common_inv'),array('class'=>'','title'=>lang($controller_name.'_count'))).'</td>';//inventory details	
 	
-	}
-	else
-	{
-		$table_data_row.='<td width="12%">&nbsp;</td>';
+	// }
+	// else
+	// {
+	// 	$table_data_row.='<td width="12%">&nbsp;</td>';
 		
-	}
+	// }
 
 	$table_data_row.='<td width="4%" class="rightmost">'.anchor($controller_name."/clone_room/$room->room_id	", lang('bedrooms_clone'),array('class'=>'','title'=>lang($controller_name.'_update'))).'</td>';			
 	$table_data_row.='<td width="4%" class="rightmost">'.anchor($controller_name."/view/$room->room_id/2	", lang('common_edit'),array('class'=>'','title'=>lang($controller_name.'_update'))).'</td>';		

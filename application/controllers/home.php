@@ -48,7 +48,7 @@ class Home extends Secure_area
 		$data['reorder_level'] = ($data['room_location_info'] && $data['room_location_info']->reorder_level) ? $data['room_location_info']->reorder_level : '';
 		
 		
-		$data['suspended_receivings'] = $this->Receiving->get_suspended_receivings_for_room($room_id);		
+		//$data['suspended_receivings'] = $this->Receiving->get_suspended_receivings_for_room($room_id);		
 		$this->load->view("bedrooms/bedrooms_modal",$data);
 	}
 

@@ -401,7 +401,7 @@ class Reserve_lib
 
 	function empty_payments()
 	{
-		$this->CI->session->unset_userdata('payments');
+		$this->CI->session->unset_userdata('reserve_payments');
 	}
 
 	//Alain Multiple Payments
@@ -725,7 +725,7 @@ class Reserve_lib
 		{
 			//Extract the id
 			$reservation_id = substr(strtolower($receipt_reservation_id), strpos(strtolower($receipt_reservation_id),$this->CI->config->item('reserve_prefix').' ') + strlen(strtolower($this->CI->config->item('reserve_prefix')).' '));
-			return $this->CI->reserve->exists($reservation_id);
+			return $this->CI->Reservation->exists($reservation_id);
 		}
 
 		return false;
@@ -742,24 +742,20 @@ class Reserve_lib
 		$this->delete_customer();
 		$reserve_taxes = $this->get_taxes($reservation_id);
 
-		foreach($this->CI->reserve->get_reserve_bedrooms($reservation_id)->result() as $row)
+		foreach($this->CI->Reservation->get_reservations_bedrooms($reservation_id)->result() as $row)
 		{
 			$room_info = $this->CI->Room->get_info($row->room_id);
 			$price_to_use = $row->room_unit_price;
 			//If we have tax included, but we don't have any taxes for reserve, pretend that we do have taxes so the right price shows up
-			if ($room_info->tax_included && empty($reserve_taxes))
+			if (empty($reserve_taxes))
 			{
 				$price_to_use = get_price_for_room_including_taxes($row->room_id, $row->room_unit_price);
 			}
-			elseif($room_info->tax_included)
-			{
-				$price_to_use = get_price_for_room_including_taxes($row->line, $row->room_unit_price,$reservation_id);
-			}
-
+			
 			$this->add_room($row->room_id,-$row->quantity_purchased,$row->discount_percent,$price_to_use,$row->description,$row->serialnumber, TRUE, $row->line);
 		}
 
-		$this->set_customer($this->CI->reserve->get_customer($reservation_id)->person_id);
+		$this->set_customer($this->CI->Reservation->get_customer($reservation_id)->person_id);
 	}
 
 	function copy_entire_reserve($reservation_id, $is_receipt = false)
@@ -768,36 +764,32 @@ class Reserve_lib
 		$this->delete_customer();
 		$reserve_taxes = $this->get_taxes($reservation_id);
 
-		foreach($this->CI->reserve->get_reserve_bedrooms($reservation_id)->result() as $row)
+		foreach($this->CI->Reservation->get_reservations_bedrooms($reservation_id)->result() as $row)
 		{
 			$room_info = $this->CI->Room->get_info($row->room_id);
 			$price_to_use = $row->room_unit_price;
 
 			//If we have tax included, but we don't have any taxes for reserve, pretend that we do have taxes so the right price shows up
-			if ($room_info->tax_included && empty($reserve_taxes) && !$is_receipt)
+			if (empty($reserve_taxes) && !$is_receipt)
 			{
 				$price_to_use = get_price_for_room_including_taxes($row->room_id, $row->room_unit_price);
 			}
-			elseif($room_info->tax_included)
-			{
-				$price_to_use = get_price_for_room_including_taxes($row->line, $row->room_unit_price,$reservation_id);
-			}
-
+			
 			$this->add_room($row->room_id,$row->quantity_purchased,$row->discount_percent,$price_to_use,$row->description,$row->serialnumber, TRUE, $row->line);
 		}
 
 
-		foreach($this->CI->reserve->get_reserve_payments($reservation_id)->result() as $row)
+		foreach($this->CI->Reservation->get_reservations_payments($reservation_id)->result() as $row)
 		{
 			$this->add_payment($row->payment_type,$row->payment_amount, $row->payment_date, $row->truncated_card, $row->card_issuer);
 		}
-		$customer_info = $this->CI->reserve->get_customer($reservation_id);
+		$customer_info = $this->CI->Reservation->get_customer($reservation_id);
 		$this->set_customer($customer_info->person_id);
 
-		$this->set_comment($this->CI->reserve->get_comment($reservation_id));
-		$this->set_comment_on_receipt($this->CI->reserve->get_comment_on_receipt($reservation_id));
+		$this->set_comment($this->CI->Reservation->get_comment($reservation_id));
+		$this->set_comment_on_receipt($this->CI->Reservation->get_comment_on_receipt($reservation_id));
 
-		$this->set_sold_by_employee_id($this->CI->reserve->get_sold_by_employee_id($reservation_id));
+		$this->set_sold_by_employee_id($this->CI->Reservation->get_sold_by_employee_id($reservation_id));
 
 	}
 
@@ -941,7 +933,7 @@ class Reserve_lib
 
 		if ($reservation_id)
 		{
-			$taxes_from_reserve = $this->CI->reserve->get_reserve_bedrooms_taxes($reservation_id);
+			$taxes_from_reserve = $this->CI->Reservation->get_reservations_bedrooms_taxes($reservation_id);
 			foreach($taxes_from_reserve as $key=>$tax_room)
 			{
 				$name = $tax_room['percent'].'% ' . $tax_room['name'];
@@ -1038,17 +1030,7 @@ class Reserve_lib
 		if (isset($room['room_id']))
 		{
 			$room_info = $this->CI->Room->get_info($room['room_id']);
-			/*if($room_info->tax_included)
-			{
-				if ($reservation_id)
-				{
-					$price_to_use = get_price_for_room_excluding_taxes($room['line'], $room['price'], $reservation_id);
-				}
-				else
-				{
-					$price_to_use = get_price_for_room_excluding_taxes($room['room_id'], $room['price']);
-				}
-			}*/
+			
 		}
 
 

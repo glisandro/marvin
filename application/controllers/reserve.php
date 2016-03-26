@@ -125,7 +125,7 @@ class Reserve extends Secure_area
 	function room_search()
 	{
 		$suggestions = $this->Room->get_room_search_suggestions($this->input->get('term'),100);
-		$suggestions = array_merge($suggestions, $this->Room_kit->get_room_kit_search_suggestions($this->input->get('term'),100));
+		//$suggestions = array_merge($suggestions, $this->Room_kit->get_room_kit_search_suggestions($this->input->get('term'),100));
 		echo json_encode($suggestions);
 	}
 	
@@ -173,12 +173,12 @@ class Reserve extends Secure_area
 		$mode = $this->input->post("mode");
 		$this->reserve_lib->set_mode($mode);
 
-		if ($mode == 'store_account_payment')
-		{
-			$store_account_payment_room_id = $this->Room->create_or_update_store_account_room();
-			$this->reserve_lib->empty_cart();
-			$this->reserve_lib->add_room($store_account_payment_room_id,1);
-		}
+		// if ($mode == 'store_account_payment')
+		// {
+		// 	$store_account_payment_room_id = $this->Room->create_or_update_store_account_room();
+		// 	$this->reserve_lib->empty_cart();
+		// 	$this->reserve_lib->add_room($store_account_payment_room_id,1);
+		// }
 
 		$this->_reload();
 	}
@@ -318,7 +318,7 @@ class Reserve extends Secure_area
 	{
 		$data=array();
 		$mode = $this->reserve_lib->get_mode();
-		$room_id_or_number_or_room_kit_or_receipt = $this->input->post("item");
+		$room_id_or_number_or_room_kit_or_receipt = $this->input->post("room");
 		$quantity = $mode=="reserve" ? 1:-1;
 
 		if($this->reserve_lib->is_valid_receipt($room_id_or_number_or_room_kit_or_receipt) && $mode=='return')
@@ -424,9 +424,6 @@ class Reserve extends Secure_area
 			$this->_reload(array('error' => lang('reserve_cannot_complete_reserve_as_payments_do_not_cover_total')), false);
 			return;
 		}
-		$tier_id = $this->reserve_lib->get_selected_tier_id();
-		$tier_info = $this->Tier->get_info($tier_id);
-		$data['tier'] = $tier_info->name;
 		$data['register_name'] = $this->Register->get_register_name($this->Employee->get_logged_in_employee_current_register_id());
 
 		$data['subtotal']=$this->reserve_lib->get_subtotal();
@@ -464,7 +461,7 @@ class Reserve extends Secure_area
 		$data['change_reserve_date'] =$this->reserve_lib->get_change_reserve_date_enable() ?  $this->reserve_lib->get_change_reserve_date() : false;
 
 		$old_date = $this->reserve_lib->get_change_reservation_id()  ? $this->Reservation->get_info($this->reserve_lib->get_change_reservation_id())->row_array() : false;
-		$old_date=  $old_date ? date(get_date_format().' '.get_time_format(), strtotime($old_date['reserve_time'])) : date(get_date_format().' '.get_time_format());
+		$old_date=  $old_date ? date(get_date_format().' '.get_time_format(), strtotime($old_date['reservation_time'])) : date(get_date_format().' '.get_time_format());
 		$data['transaction_time']= $this->reserve_lib->get_change_reserve_date_enable() ?  date(get_date_format().' '.get_time_format(), strtotime($this->reserve_lib->get_change_reserve_date())) : $old_date;
 
 		if($customer_id!=-1)
@@ -481,24 +478,24 @@ class Reserve extends Secure_area
 			$data['customer_email'] = $cust_info->email;
 		}
 
-		$suspended_change_reserve_id=$this->reserve_lib->get_change_reservation_id() ? $this->reserve_lib->get_change_reservation_id() : $this->reserve_lib->get_change_reservation_id() ;
+		 $suspended_change_reservation_id=$this->reserve_lib->get_change_reservation_id() ? $this->reserve_lib->get_change_reservation_id() : $this->reserve_lib->get_change_reservation_id() ;
 
 		//If we have a previous sale make sure we get the ref_no unless we already have it set
-		if ($suspended_change_reserve_id && !$data['ref_no'])
+		if ($suspended_change_reservation_id && !$data['ref_no'])
 		{
-			$reserve_info = $this->Reservation->get_info($suspended_change_reserve_id)->row_array();
+			$reserve_info = $this->Reservation->get_info($suspended_change_reservation_id)->row_array();
 			$data['ref_no'] = $reserve_info['cc_ref_no'];
 		}
 
 		//If we have a previous sale make sure we get the auth_code unless we already have it set
-		if ($suspended_change_reserve_id && !$data['auth_code'])
+		if ($suspended_change_reservation_id && !$data['auth_code'])
 		{
-			$reserve_info = $this->Reservation->get_info($suspended_change_reserve_id)->row_array();
+			$reserve_info = $this->Reservation->get_info($suspended_change_reservation_id)->row_array();
 			$data['auth_code'] = $reserve_info['auth_code'];
 		}
 
 		//If we have a suspended sale, update the date for the sale
-		if ($this->reserve_lib->get_change_reservation_id() && $this->config->item('change_reserve_date_when_completing_suspended_reserve'))
+		if ($this->reserve_lib->get_change_reservation_id() && $this->config->item('change_sale_date_when_completing_suspended_sale'))
 		{
 			$data['change_reserve_date'] = date('Y-m-d H:i:s');
 		}
@@ -506,9 +503,9 @@ class Reserve extends Secure_area
 		$data['store_account_payment'] = $this->reserve_lib->get_mode() == 'store_account_payment' ? 1 : 0;
 
 		//SAVE sale to database
-		$reserve_id_raw = $this->Reservation->save($data['cart'], $customer_id, $employee_id, $sold_by_employee_id, $data['comment'],$data['show_comment_on_receipt'],$data['payments'], $suspended_change_reserve_id, 0,$data['ref_no'],$data['auth_code'], $data['change_reserve_date'], $data['balance'], $data['store_account_payment']);
-		$data['reserve_id']=$this->config->item('reserve_prefix').' '.$reserve_id_raw;
-		$data['reserve_id_raw']=$reserve_id_raw;
+		$reservation_id_raw = $this->Reservation->save($data['cart'], $customer_id, $employee_id, $sold_by_employee_id, $data['comment'],$data['show_comment_on_receipt'],$data['payments'], $suspended_change_reservation_id, 0,$data['ref_no'],$data['auth_code'], $data['change_reserve_date'], $data['balance'], 0);
+		$data['reservation_id']=$this->config->item('sale_prefix').' '.$reservation_id_raw;
+		$data['reservation_id_raw']=$reservation_id_raw;
 
 		if($customer_id != -1)
 		{
@@ -534,7 +531,7 @@ class Reserve extends Secure_area
 
 		}
 
-		if ($data['reserve_id'] == $this->config->item('reserve_prefix').' -1')
+		if ($data['reservation_id'] == $this->config->item('reserve_prefix').' -1')
 		{
 			$data['error_message'] = '';
 			if (is_reserve_integrated_cc_processing())
@@ -562,32 +559,29 @@ class Reserve extends Secure_area
 		$this->reserve_lib->clear_all();
 	}
 
-	function email_receipt($reserve_id)
+	function email_receipt($reservation_id)
 	{
 		//Before changing the sale session data, we need to save our current state in case they were in the middle of a sale
 		$this->reserve_lib->save_current_reserve_state();
 
-		$reserve_info = $this->Reservation->get_info($reserve_id)->row_array();
-		$this->reserve_lib->copy_entire_reserve($reserve_id, true);
+		$reserve_info = $this->Reservation->get_info($reservation_id)->row_array();
+		$this->reserve_lib->copy_entire_reserve($reservation_id, true);
 		$data['cart']=$this->reserve_lib->get_cart();
 		$data['payments']=$this->reserve_lib->get_payments();
 		$data['is_reserve_cash_payment'] = $this->reserve_lib->is_reserve_cash_payment();
-		$tier_id = $reserve_info['tier_id'];
-		$tier_info = $this->Tier->get_info($tier_id);
-		$data['tier'] = $tier_info->name;
 		$data['register_name'] = $this->Register->get_register_name($reserve_info['register_id']);
-		$data['subtotal']=$this->reserve_lib->get_subtotal($reserve_id);
-		$data['taxes']=$this->reserve_lib->get_taxes($reserve_id);
-		$data['total']=$this->reserve_lib->get_total($reserve_id);
+		$data['subtotal']=$this->reserve_lib->get_subtotal($reservation_id);
+		$data['taxes']=$this->reserve_lib->get_taxes($reservation_id);
+		$data['total']=$this->reserve_lib->get_total($reservation_id);
 		$data['receipt_title']=lang('reserve_receipt');
-		$data['transaction_time']= date(get_date_format().' '.get_time_format(), strtotime($reserve_info['reserve_time']));
+		$data['transaction_time']= date(get_date_format().' '.get_time_format(), strtotime($reserve_info['reservation_time']));
 		$customer_id=$this->reserve_lib->get_customer();
 		$emp_info=$this->Employee->get_info($reserve_info['employee_id']);
 		$sold_by_employee_id=$reserve_info['sold_by_employee_id'];
 		$reserve_emp_info=$this->Employee->get_info($sold_by_employee_id);
 
 		$data['payment_type']=$reserve_info['payment_type'];
-		$data['amount_change']=$this->reserve_lib->get_amount_due_round($reserve_id) * -1;
+		$data['amount_change']=$this->reserve_lib->get_amount_due_round($reservation_id) * -1;
 		$data['employee']=$emp_info->first_name.' '.$emp_info->last_name.($sold_by_employee_id && $sold_by_employee_id != $reserve_info['employee_id'] ? '/'. $reserve_emp_info->first_name.' '.$reserve_emp_info->last_name: '');
 
 		$data['ref_no'] = $reserve_info['cc_ref_no'];
@@ -610,18 +604,18 @@ class Reserve extends Secure_area
 			}
 		}
 
-		$data['reserve_id']=$this->config->item('reserve_prefix').' '.$reserve_id;
-		$data['reserve_id_raw']=$reserve_id;
+		$data['reservation_id']=$this->config->item('reserve_prefix').' '.$reservation_id;
+		$data['reservation_id_raw']=$reservation_id;
 		$data['store_account_payment'] = FALSE;
 
-		foreach($data['cart'] as $item)
-		{
-			if ($item['name'] == lang('reserve_store_account_payment'))
-			{
-				$data['store_account_payment'] = TRUE;
-				break;
-			}
-		}
+		// foreach($data['cart'] as $item)
+		// {
+		// 	if ($item['name'] == lang('reserve_store_account_payment'))
+		// 	{
+		// 		$data['store_account_payment'] = TRUE;
+		// 		break;
+		// 	}
+		// }
 
 		if ($reserve_info['suspended'] > 0)
 		{
@@ -654,40 +648,37 @@ class Reserve extends Secure_area
 		$this->reserve_lib->restore_current_reserve_state();
 	}
 
-	function receipt($reserve_id)
+	function receipt($reservation_id)
 	{
 		//Before changing the sale session data, we need to save our current state in case they were in the middle of a sale
 		$this->reserve_lib->save_current_reserve_state();
 
 		$data['is_reserve'] = FALSE;
-		$reserve_info = $this->Reservation->get_info($reserve_id)->row_array();
+		$reserve_info = $this->Reservation->get_info($reservation_id)->row_array();
 		$this->reserve_lib->clear_all();
-		$this->reserve_lib->copy_entire_reserve($reserve_id, true);
+		$this->reserve_lib->copy_entire_reserve($reservation_id, true);
 		$data['cart']=$this->reserve_lib->get_cart();
 		$data['payments']=$this->reserve_lib->get_payments();
 		$data['is_reserve_cash_payment'] = $this->reserve_lib->is_reserve_cash_payment();
 		$data['show_payment_times'] = TRUE;
 
 
-		$tier_id = $reserve_info['tier_id'];
-		$tier_info = $this->Tier->get_info($tier_id);
-		$data['tier'] = $tier_info->name;
 		$data['register_name'] = $this->Register->get_register_name($reserve_info['register_id']);
 
-		$data['subtotal']=$this->reserve_lib->get_subtotal($reserve_id);
-		$data['taxes']=$this->reserve_lib->get_taxes($reserve_id);
-		$data['total']=$this->reserve_lib->get_total($reserve_id);
+		$data['subtotal']=$this->reserve_lib->get_subtotal($reservation_id);
+		$data['taxes']=$this->reserve_lib->get_taxes($reservation_id);
+		$data['total']=$this->reserve_lib->get_total($reservation_id);
 		$data['receipt_title']=lang('reserve_receipt');
-		$data['comment'] = $this->Reservation->get_comment($reserve_id);
-		$data['show_comment_on_receipt'] = $this->Reservation->get_comment_on_receipt($reserve_id);
-		$data['transaction_time']= date(get_date_format().' '.get_time_format(), strtotime($reserve_info['reserve_time']));
+		$data['comment'] = $this->Reservation->get_comment($reservation_id);
+		$data['show_comment_on_receipt'] = $this->Reservation->get_comment_on_receipt($reservation_id);
+		$data['transaction_time']= date(get_date_format().' '.get_time_format(), strtotime($reserve_info['reservation_time']));
 		$customer_id=$this->reserve_lib->get_customer();
 
 		$emp_info=$this->Employee->get_info($reserve_info['employee_id']);
 		$sold_by_employee_id=$reserve_info['sold_by_employee_id'];
 		$reserve_emp_info=$this->Employee->get_info($sold_by_employee_id);
 		$data['payment_type']=$reserve_info['payment_type'];
-		$data['amount_change']=$this->reserve_lib->get_amount_due($reserve_id) * -1;
+		$data['amount_change']=$this->reserve_lib->get_amount_due($reservation_id) * -1;
 		$data['employee']=$emp_info->first_name.' '.$emp_info->last_name.($sold_by_employee_id && $sold_by_employee_id != $reserve_info['employee_id'] ? '/'. $reserve_emp_info->first_name.' '.$reserve_emp_info->last_name: '');
 		$data['ref_no'] = $reserve_info['cc_ref_no'];
 		$data['auth_code'] = $reserve_info['auth_code'];
@@ -710,18 +701,18 @@ class Reserve extends Secure_area
 				$data['customer_balance_for_reserve'] = $cust_info->balance;
 			}
 		}
-		$data['reserve_id']=$this->config->item('reserve_prefix').' '.$reserve_id;
-		$data['reserve_id_raw']=$reserve_id;
+		$data['reservation_id']=$this->config->item('reserve_prefix').' '.$reservation_id;
+		$data['reservation_id_raw']=$reservation_id;
 		$data['store_account_payment'] = FALSE;
 
-		foreach($data['cart'] as $item)
-		{
-			if ($item['name'] == lang('reserve_store_account_payment'))
-			{
-				$data['store_account_payment'] = TRUE;
-				break;
-			}
-		}
+		// foreach($data['cart'] as $item)
+		// {
+		// 	if ($item['name'] == lang('reserve_store_account_payment'))
+		// 	{
+		// 		$data['store_account_payment'] = TRUE;
+		// 		break;
+		// 	}
+		// }
 
 		if ($reserve_info['suspended'] > 0)
 		{
@@ -742,12 +733,12 @@ class Reserve extends Secure_area
 		$this->reserve_lib->restore_current_reserve_state();
 	}
 
-	function fulfillment($reserve_id)
+	function fulfillment($reservation_id)
 	{
-		$reserve_info = $this->Reservation->get_info($reserve_id)->row_array();
-		$data['comment'] = $this->Reservation->get_comment($reserve_id);
-		$data['show_comment_on_receipt'] = $this->Reservation->get_comment_on_receipt($reserve_id);
-		$data['transaction_time']= date(get_date_format().' '.get_time_format(), strtotime($reserve_info['reserve_time']));
+		$reserve_info = $this->Reservation->get_info($reservation_id)->row_array();
+		$data['comment'] = $this->Reservation->get_comment($reservation_id);
+		$data['show_comment_on_receipt'] = $this->Reservation->get_comment_on_receipt($reservation_id);
+		$data['transaction_time']= date(get_date_format().' '.get_time_format(), strtotime($reserve_info['reservation_time']));
 		$customer_id=$reserve_info['customer_id'];
 
 		$emp_info=$this->Employee->get_info($reserve_info['employee_id']);
@@ -765,10 +756,10 @@ class Reserve extends Secure_area
 			$data['customer_phone'] = $cust_info->phone_number;
 			$data['customer_email'] = $cust_info->email;
 		}
-		$data['reserve_id']=$this->config->item('reserve_prefix').' '.$reserve_id;
-		$data['reserve_id_raw']=$reserve_id;
-		$data['reserve_rooms'] = $this->Reservation->get_reserve_bedrooms_ordered_by_category($reserve_id)->result_array();
-		$data['reserve_room_kits'] = $this->Reservation->get_reserve_room_kits_ordered_by_category($reserve_id)->result_array();
+		$data['reservation_id']=$this->config->item('reserve_prefix').' '.$reservation_id;
+		$data['reservation_id_raw']=$reservation_id;
+		$data['reserve_rooms'] = $this->Reservation->get_reserve_bedrooms_ordered_by_category($reservation_id)->result_array();
+		//$data['reserve_room_kits'] = $this->Reservation->get_reserve_room_kits_ordered_by_category($reservation_id)->result_array();
 		$data['discount_exists'] = $this->_does_discount_exists($data['reserve_bedrooms']) || $this->_does_discount_exists($data['reserve_room_kits']);
 		$this->load->view("reserve/fulfillment",$data);
 	}
@@ -786,9 +777,9 @@ class Reserve extends Secure_area
 		return FALSE;
 	}
 
-	function edit($reserve_id)
+	function edit($reservation_id)
 	{
-		if(!$this->Employee->has_module_action_permission('reserve', 'edit_reserve', $this->Employee->get_logged_in_employee_info()->person_id))
+		if(!$this->Employee->has_module_action_permission('reserve', 'edit_sale', $this->Employee->get_logged_in_employee_info()->person_id))
 		{
 			redirect('no_access/'.$this->module_id);
 		}
@@ -807,30 +798,30 @@ class Reserve extends Secure_area
 			$data['employees'][$employee->person_id] = $employee->first_name . ' '. $employee->last_name;
 		}
 
-		$data['reserve_info'] = $this->Reservation->get_info($reserve_id)->row_array();
+		$data['reserve_info'] = $this->Reservation->get_info($reservation_id)->row_array();
 
 		$data['store_account_payment'] = FALSE;
 
-		foreach($this->Reservation->get_reservations_bedrooms($reserve_id)->result_array() as $row)
-		{
-			$room_info = $this->Room->get_info($row['room_id']);
+		// foreach($this->Reservation->get_reservations_bedrooms($reservation_id)->result_array() as $row)
+		// {
+		// 	$room_info = $this->Room->get_info($row['room_id']);
 
-			if ($room_info->name == lang('reserve_store_account_payment'))
-			{
-				$data['store_account_payment'] = TRUE;
-				break;
-			}
-		}
+		// 	if ($room_info->name == lang('reserve_store_account_payment'))
+		// 	{
+		// 		$data['store_account_payment'] = TRUE;
+		// 		break;
+		// 	}
+		// }
 
 		$this->load->view('reserves/edit', $data);
 	}
 
-	function delete($reserve_id)
+	function delete($reservation_id)
 	{
 		$this->check_action_permission('delete_reserve');
 		$data = array();
 
-		if ($this->Reservation->delete($reserve_id))
+		if ($this->Reservation->delete($reservation_id))
 		{
 			$data['success'] = true;
 		}
@@ -843,11 +834,11 @@ class Reserve extends Secure_area
 
 	}
 
-	function undelete($reserve_id)
+	function undelete($reservation_id)
 	{
 		$data = array();
 
-		if ($this->Reservation->undelete($reserve_id))
+		if ($this->Reservation->undelete($reservation_id))
 		{
 			$data['success'] = true;
 		}
@@ -860,24 +851,24 @@ class Reserve extends Secure_area
 
 	}
 
-	function save($reserve_id)
+	function save($reservation_id)
 	{
 		$reserve_data = array(
-			'reserve_time' => date('Y-m-d', strtotime($this->input->post('date'))),
+			'reservation_time' => date('Y-m-d', strtotime($this->input->post('date'))),
 			'customer_id' => $this->input->post('customer_id') ? $this->input->post('customer_id') : null,
 			'employee_id' => $this->input->post('employee_id'),
 			'comment' => $this->input->post('comment'),
 			'show_comment_on_receipt' => $this->input->post('show_comment_on_receipt') ? 1 : 0
 		);
 
-		$reserve_info = $this->Reservation->get_info($reserve_id)->row_array();
+		$reserve_info = $this->Reservation->get_info($reservation_id)->row_array();
 
-		if (date('Y-m-d', strtotime($this->input->post('date')))== date('Y-m-d', strtotime($reserve_info['reserve_time'])))
+		if (date('Y-m-d', strtotime($this->input->post('date')))== date('Y-m-d', strtotime($reserve_info['reservation_time'])))
 		{
-			unset($reserve_data['reserve_time']);
+			unset($reserve_data['reservation_time']);
 		}
 
-		if ($this->Reservation->update($reserve_data, $reserve_id))
+		if ($this->Reservation->update($reserve_data, $reservation_id))
 		{
 			echo json_encode(array('success'=>true,'message'=>lang('reserve_successfully_updated')));
 		}
@@ -897,7 +888,7 @@ class Reserve extends Secure_area
 		}
 
 		/* Changed the conditional to account for floating point rounding */
-		if ( ( $this->reserve_lib->get_mode() == 'reserve' || $this->reserve_lib->get_mode() == 'store_account_payment' ) && ( ( to_currency_no_money( $this->reserve_lib->get_total() ) - $total_payments ) > 1e-6 ) )
+		if ( ( $this->reserve_lib->get_mode() == 'reserve' ) && ( ( to_currency_no_money( $this->reserve_lib->get_total() ) - $total_payments ) > 1e-6 ) )
 		{
 			return false;
 		}
@@ -956,15 +947,15 @@ class Reserve extends Secure_area
 		$data['employees'] = $employees;
 
 		$data['selected_sold_by_employee_id'] = $this->reserve_lib->get_sold_by_employee_id();
-		$tiers = array();
+		// $tiers = array();
 
-		$tiers[0] = lang('items_none');
-		foreach($this->Tier->get_all()->result() as $tier)
-		{
-			$tiers[$tier->id]=$tier->name;
-		}
+		// $tiers[0] = lang('items_none');
+		// foreach($this->Tier->get_all()->result() as $tier)
+		// {
+		// 	$tiers[$tier->id]=$tier->name;
+		// }
 
-		$data['tiers'] = $tiers;
+		//$data['tiers'] = $tiers;
 
 		if ($this->Location->get_info_for_key('enable_credit_card_processing'))
 		{
@@ -1018,7 +1009,7 @@ class Reserve extends Secure_area
 			$data['use_saved_cc_info'] = $this->reserve_lib->get_use_saved_cc_info();
 			$data['avatar']=$info->image_id ?  site_url('app_files/view/'.$info->image_id) : ""; //can be changed to  base_url()."/img/avatar.png" if it is required
 
-			if (!$this->config->item('hide_customer_recent_reserve'))
+			if (!$this->config->item('hide_customer_recent_sales'))
 			{
 				$data['recent_reserve'] = $this->Reservation->get_recent_reservation_for_customer($customer_id);
 			}
@@ -1058,60 +1049,7 @@ class Reserve extends Secure_area
      	$this->reserve_lib->clear_all();
      	$this->_reload();
 	}
-	function suspend($suspend_type = 1)
-	{
-		$data['cart']=$this->reserve_lib->get_cart();
-		$data['subtotal']=$this->reserve_lib->get_subtotal();
-		$data['taxes']=$this->reserve_lib->get_taxes();
-		$data['total']=$this->reserve_lib->get_total();
-		$data['receipt_title']=lang('reserve_receipt');
-		$data['transaction_time']= date(get_date_format().' '.get_time_format());
-		$customer_id=$this->reserve_lib->get_customer();
-		$employee_id=$this->Employee->get_logged_in_employee_info()->person_id;
-		$sold_by_employee_id=$this->reserve_lib->get_sold_by_employee_id();
-		$comment = $this->reserve_lib->get_comment();
-		$comment = $this->reserve_lib->get_comment();
-		$show_comment_on_receipt = $this->reserve_lib->get_comment_on_receipt();
-		$emp_info=$this->Employee->get_info($employee_id);
-		//Alain Multiple payments
-		$data['payments']=$this->reserve_lib->get_payments();
-		$data['amount_change']=$this->reserve_lib->get_amount_due() * -1;
-		$data['balance']=$this->reserve_lib->get_payment_amount(lang('reserve_store_account'));
-		$data['employee']=$emp_info->first_name.' '.$emp_info->last_name;
-
-		if($customer_id!=-1)
-		{
-			$cust_info=$this->Customer->get_info($customer_id);
-			$data['customer']=$cust_info->first_name.' '.$cust_info->last_name.($cust_info->company_name==''  ? '' :' - '.$cust_info->company_name).($cust_info->account_number==''  ? '' :' - '.$cust_info->account_number);
-		}
-
-		$total_payments = 0;
-
-		foreach($data['payments'] as $payment)
-		{
-			$total_payments += $payment['payment_amount'];
-		}
-
-		$reserve_id = $this->reserve_lib->get_change_reservation_id();
-		//SAVE sale to database
-		$reserve_id = $this->Reservation->save($data['cart'], $customer_id,$employee_id, $sold_by_employee_id, $comment,$show_comment_on_receipt,$data['payments'], $reserve_id, $suspend_type,'','',$this->config->item('change_reserve_date_when_suspending') ? date('Y-m-d H:i:s') : FALSE, $data['balance']);
-
-		$data['reserve_id']=$this->config->item('reserve_prefix').' '.$reserve_id;
-		if ($data['reserve_id'] == $this->config->item('reserve_prefix').' -1')
-		{
-			$data['error_message'] = lang('reserve_transaction_failed');
-		}
-		$this->reserve_lib->clear_all();
-
-		if ($this->config->item('show_receipt_after_suspending_reserve'))
-		{
-			redirect('reserve/receipt/'.$reserve_id);
-		}
-		else
-		{
-			$this->_reload(array('success' => lang('reserve_successfully_suspended_reserve')));
-		}
-	}
+	
 
 
 	function batch_reserve()
@@ -1134,84 +1072,7 @@ class Reserve extends Secure_area
 	}
 
 
-	function do_excel_import()
-	{
-		if (is_on_demo_host())
-		{
-			$msg = lang('items_excel_import_disabled_on_demo');
-			echo json_encode( array('success'=>false,'message'=>$msg) );
-			return;
-		}
-
-		set_time_limit(0);
-		//$this->check_action_permission('add_update');
-		$this->db->trans_start();
-
-		$msg = 'do_excel_import';
-		$failCodes = array();
-
-		if ($_FILES['file_path']['error']!=UPLOAD_ERR_OK)
-		{
-			$msg = lang('suppliers_excel_import_failed');
-			echo json_encode( array('success'=>false,'message'=>$msg) );
-			return;
-		}
-		else
-		{
-			if (($handle = fopen($_FILES['file_path']['tmp_name'], "r")) !== FALSE)
-			{
-				$objPHPExcel = file_to_obj_php_excel($_FILES['file_path']['tmp_name']);
-				$sheet = $objPHPExcel->getActiveSheet();
-				$num_rows = $objPHPExcel->setActiveSheetIndex(0)->getHighestRow();
-
-				//Loop through rows, skip header row
-				for($k = 2;$k<=$num_rows; $k++)
-				{
-
-					$room_id = $sheet->getCellByColumnAndRow(0, $k)->getValue();
-					if (!$room_id)
-					{
-						$room_id = '';
-					}
-
-					$price = $sheet->getCellByColumnAndRow(1, $k)->getValue();
-					if (!$price)
-					{
-						$price = null;
-					}
-
-					$quantity = $sheet->getCellByColumnAndRow(2, $k)->getValue();
-					if (!$quantity)
-					{
-						$quantity = 1;
-					}
-
-					$discount = $sheet->getCellByColumnAndRow(3, $k)->getValue();
-					if (!$discount)
-					{
-						$discount = 0;
-					}
-
-					elseif(!$this->reserve_lib->add_room($room_id,$quantity,$discount,$price))
-					{
-						$this->reserve_lib->empty_cart();
-						echo json_encode( array('success'=>false,'message'=>lang('batch_reserve_error')));
-						return;
-					}
-				}
-			}
-			else
-			{
-				echo json_encode( array('success'=>false,'message'=>lang('common_upload_file_not_supported_format')));
-				return;
-			}
-		}
-		$this->db->trans_complete();
-		echo json_encode(array('success'=>true,'message'=>lang('reserve_import_successfull')));
-
-	}
-
-
+	
 	function new_giftcard()
 	{
 		if (!$this->Employee->has_module_action_permission('giftcards', 'add_update', $this->Employee->get_logged_in_employee_info()->person_id))
@@ -1231,12 +1092,12 @@ class Reserve extends Secure_area
 		$this->load->view('reserves/suspended', $data);
 	}
 
-	function change_reserve($reserve_id)
+	function change_reservation($reservation_id)
 	{
-		$this->check_action_permission('edit_reserve');
+		$this->check_action_permission('edit_sale');
 		$this->reserve_lib->clear_all();
-		$this->reserve_lib->copy_entire_reserve($reserve_id);
-		$this->reserve_lib->set_change_reserve_id($reserve_id);
+		$this->reserve_lib->copy_entire_reserve($reservation_id);
+		$this->reserve_lib->set_change_reservation_id($reservation_id);
 
 		if ($this->Location->get_info_for_key('enable_credit_card_processing'))
 		{
@@ -1247,10 +1108,10 @@ class Reserve extends Secure_area
 
 	function unsuspend()
 	{
-		$reserve_id = $this->input->post('suspended_reserve_id');
+		$reservation_id = $this->input->post('suspended_reservation_id');
 		$this->reserve_lib->clear_all();
-		$this->reserve_lib->copy_entire_reserve($reserve_id);
-		$this->reserve_lib->set_suspended_reserve_id($reserve_id);
+		$this->reserve_lib->copy_entire_reserve($reservation_id);
+		$this->reserve_lib->set_suspended_reservation_id($reservation_id);
 
 
 		if ($this->reserve_lib->get_customer())
@@ -1269,11 +1130,11 @@ class Reserve extends Secure_area
 	function delete_suspended_reserve()
 	{
 		$this->check_action_permission('delete_suspended_reserve');
-		$suspended_reserve_id = $this->input->post('suspended_reserve_id');
-		if ($suspended_reserve_id)
+		$suspended_reservation_id = $this->input->post('suspended_reservation_id');
+		if ($suspended_reservation_id)
 		{
-			$this->reserve_lib->delete_suspended_reserve_id();
-			$this->Reservation->delete($suspended_reserve_id);
+			$this->reserve_lib->delete_suspended_reservation_id();
+			$this->Reservation->delete($suspended_reservation_id);
 		}
     	redirect('reserve/suspended');
 	}
@@ -1300,15 +1161,15 @@ class Reserve extends Secure_area
 			}
 		}
 
-		$room_kit_categories = array();
-		$room_kit_categories_bedrooms_result = $this->Room_kit->get_all_categories()->result();
+		// $room_kit_categories = array();
+		// $room_kit_categories_bedrooms_result = $this->Room_kit->get_all_categories()->result();
 
-		foreach($room_kit_categories_bedrooms_result as $category)
-		{
-			$room_kit_categories[] = $category->category;
-		}
+		// foreach($room_kit_categories_bedrooms_result as $category)
+		// {
+		// 	$room_kit_categories[] = $category->category;
+		// }
 
-		$categories = array_unique(array_merge($room_categories, $room_kit_categories));
+		$categories = array_unique($room_categories);
 		sort($categories);
 
 		$categories_count = count($categories);

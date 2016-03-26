@@ -10,9 +10,9 @@
 		<?php if($this->config->item('website')) { ?>
 			<div id="website"><?php echo $this->config->item('website'); ?></div>
 		<?php } ?>
-		<div id="sale_receipt"><?php echo lang('sales_fulfillment_sheet'); ?></div>
+		<div id="sale_receipt"><?php echo lang('reserve_fulfillment_sheet'); ?></div>
 		<div id="sale_time"><?php echo $transaction_time ?></div>
-		<div class="pull-right"><button class="btn btn-primary text-white hidden-print" id="new_sale_button_1" onclick="window.location='<?php echo site_url('sales'); ?>'" > <?php echo lang('sales_new_sale'); ?> </button></div>
+		<div class="pull-right"><button class="btn btn-primary text-white hidden-print" id="new_sale_button_1" onclick="window.location='<?php echo site_url('sales'); ?>'" > <?php echo lang('reserve_new_sale'); ?> </button></div>
 	</div>
 	<div id="receipt_general_info">
 		<?php if(isset($customer))
@@ -27,7 +27,9 @@
 		<?php
 		}
 		?>
-		<div id="sale_id"><?php echo lang('sales_id').": ".$sale_id; ?></div>
+		<div id="reservation_id"><?php echo lang('reserve_id').": ".$reservation_id; ?></div>
+		<div id="date"><?php echo lang('reserve_date_from_to').": ".$reservation_from." - ".$reservation_to; ?></div>
+		
 		<div id="employee"><?php echo lang('employees_employee').": ".$employee; ?></div>
 		<?php 
 		if($this->Location->get_info_for_key('enable_credit_card_processing'))
@@ -39,17 +41,17 @@
 	</div>
 	<table id="receipt_items">
 	<tr>
-	<th style="width:<?php echo $discount_exists ? "33%" : "49%"; ?>;text-align:left;"><?php echo lang('items_item'); ?></th>
+	<th style="width:<?php echo $discount_exists ? "33%" : "49%"; ?>;text-align:left;"><?php echo lang('bedrooms_room'); ?></th>
 	<th style="width:20%;text-align:left;" ><?php echo lang('common_price'); ?></th>
-	<th style="width:15%;text-align:left;"><?php echo lang('sales_quantity'); ?></th>
+	<th style="width:15%;text-align:left;"><?php echo lang('reserve_quantity'); ?></th>
 	<?php if($discount_exists) 
     {
 	?>
-	<th style="width:16%;text-align:left;"><?php echo lang('sales_discount'); ?></th>
+	<th style="width:16%;text-align:left;"><?php echo lang('reserve_discount'); ?></th>
 	<?php
 	}
 	?>
-	<th style="width:16%;text-align:right;"><?php echo lang('sales_total'); ?></th>
+	<th style="width:16%;text-align:right;"><?php echo lang('reserve_total'); ?></th>
 	</tr>
 	<?php
 	if (count($sales_items) > 0)
@@ -62,37 +64,37 @@
 			</tr>
 		<?php
 		$current_category = FALSE;
-		foreach($sales_items as $item)
+		foreach($sales_items as $room)
 		{
-			if ($current_category != $item['category'])
+			if ($current_category != $room['category'])
 			{
 			?>
 				<tr>
 					<td colspan="<?php echo $discount_exists ? '5' : '4'; ?>">
-						<h3><?php echo $item['category'];?></h3>
+						<h3><?php echo $room['category'];?></h3>
 					</td>
 				</tr>
 			<?php
-				$current_category = $item['category'];
+				$current_category = $room['category'];
 			}
 			?>
 			<tr>
-			<td style="text-align:left;"><?php echo $item['name']; ?><?php if ($item['size']){ ?> (<?php echo $item['size']; ?>)<?php } ?></td>
-			<td style="text-align:left;"><?php echo to_currency($item['item_unit_price']); ?></td>
-			<td style='text-align:left;'><?php echo to_quantity($item['quantity_purchased']); ?></td>
+			<td style="text-align:left;"><?php echo $room['name']; ?><?php if ($room['beds']){ ?> (<?php echo lang('bedrooms_beds')." ".$room['beds']; ?>)<?php } ?></td>
+			<td style="text-align:left;"><?php echo to_currency($room['room_unit_price']); ?></td>
+			<td style='text-align:left;'><?php echo to_quantity($room['quantity_purchased']); ?></td>
 			<?php if($discount_exists) 
 			{
 			?>
-			<td style='text-align:left;'><?php echo $item['discount_percent']; ?></td>
+			<td style='text-align:left;'><?php echo $room['discount_percent']; ?></td>
 			<?php
 			}
 			?>
-			<td style='text-align:right;'><?php echo to_currency($item['item_unit_price']*$item['quantity_purchased']-$item['item_unit_price']*$item['quantity_purchased']*$item['discount_percent']/100); ?></td>
+			<td style='text-align:right;'><?php echo to_currency($room['room_unit_price']*$room['quantity_purchased']-$room['room_unit_price']*$room['quantity_purchased']*$room['discount_percent']/100); ?></td>
 			</tr>
 
 		    <tr>
-		    <td colspan="3" align="left"><?php echo $item['sales_items_description']; ?></td>
-			<td colspan="1" ><?php echo isset($item['serialnumber']) ? $item['serialnumber'] : ''; ?></td>
+		    <td colspan="3" align="left"><?php echo $room['sales_items_description']; ?></td>
+			<td colspan="1" ><?php echo isset($room['serialnumber']) ? $room['serialnumber'] : ''; ?></td>
 		
 			<?php if($discount_exists) {?>
 			<td colspan="1"><?php echo '&nbsp;'; ?></td>
@@ -105,58 +107,7 @@
 		?>	
 
 
-	<?php
-	if (count($sales_item_kits) > 0)
-	{
-		?>			
-		<tr>
-				<td colspan="<?php echo $discount_exists ? '5' : '4'; ?>">
-					<h1><?php echo lang('module_item_kits'); ?></h1>
-				</td>
-			</tr>
-		<?php
-		$current_category = FALSE;
-		foreach($sales_item_kits as $item)
-		{
-			if ($current_category != $item['category'])
-			{
-			?>
-				<tr>
-					<td colspan="<?php echo $discount_exists ? '5' : '4'; ?>">
-						<h3><?php echo $item['category'];?></h3>
-					</td>
-				</tr>
-			<?php
-				$current_category = $item['category'];
-			}
-			?>
-			<tr>
-			<td style="text-align:left;"><?php echo $item['name']; ?></td>
-			<td style="text-align:left;"><?php echo to_currency($item['item_kit_unit_price']); ?></td>
-			<td style='text-align:left;'><?php echo to_quantity($item['quantity_purchased']); ?></td>
-			<?php if($discount_exists) 
-			{
-			?>
-			<td style='text-align:left;'><?php echo $item['discount_percent']; ?></td>
-			<?php
-			}
-			?>
-			<td style='text-align:right;'><?php echo to_currency($item['item_kit_unit_price']*$item['quantity_purchased']-$item['item_kit_unit_price']*$item['quantity_purchased']*$item['discount_percent']/100); ?></td>
-			</tr>
-
-		    <tr>
-		    <td colspan="3" align="left"><?php echo $item['description']; ?></td>
-		
-			<?php if($discount_exists) {?>
-			<td colspan="1"><?php echo '&nbsp;'; ?></td>
-			<?php } ?>
-		    </tr>
-
-		<?php
-		}
-	}
-		?>
-
+	
 	<tr>
 		<td colspan="<?php echo $discount_exists ? '5' : '4'; ?>" align="right">
 		<?php if($show_comment_on_receipt==1)
@@ -174,12 +125,12 @@
 
 	</div>
 	<div id='barcode'>
-	<?php echo "<img src='".site_url('barcode')."?barcode=$sale_id&text=$sale_id' />"; ?>
+	<?php echo "<img src='".site_url('barcode')."?barcode=$reservation_id&text=$reservation_id' />"; ?>
 	</div>
 	
 	
 	
-<button class="btn btn-primary text-white hidden-print" id="print_button" onclick="print_fulfillment()" > <?php echo lang('sales_print'); ?> </button>
+<button class="btn btn-primary text-white hidden-print" id="print_button" onclick="print_fulfillment()" > <?php echo lang('reserve_print'); ?> </button>
 <br />
 	
 </div>

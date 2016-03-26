@@ -28,7 +28,7 @@ if (isset($error_message))
 			<?php if(!empty($customer_phone)){ ?><div><?php echo lang('common_phone_number'); ?> : <?php echo $customer_phone; ?></div><?php } ?>
 			<?php if(!empty($customer_address_1)){ ?><div><?php echo lang('common_address'); ?> : <?php echo $customer_address_1. ' '.$customer_address_2; ?></div><?php } ?>
 			<?php if (!empty($customer_city)) { echo $customer_city.' '.$customer_state.', '.$customer_zip;} ?>
-			<?php if (!empty($customer_country)) { echo '<div>'.$customer_country.'</div>';} ?>
+			<?php if (!empty($customer_country)) { echo '<div>'.$customer_country.'</div>';} ?>			
 			<?php if(!empty($customer_email)){ ?><div><?php echo lang('common_email'); ?> : <?php echo $customer_email; ?></div><?php } ?>
 		<?php
 		}
@@ -37,40 +37,40 @@ if (isset($error_message))
 		<?php if (isset($reservation_type)) { ?>
 			<div id="reservation_type"><?php echo $reservation_type; ?></div>
 		<?php } ?>
-
+		
 		<?php
 		if ($register_name)
 		{
-
+		
 		}
 		?>
-
-		<div id="date"><?php echo lang('reserve_date_from_to').": ".$reservation_from." - ".$reservation_to; ?></div>
-
-
-
+		
+		<!-- <div id="date"><?php echo lang('reserve_date_from_to').": ".$reservation_from." - ".$reservation_to; ?></div> -->
+		
+		
+		
 		<div id="employee"><?php echo lang('employees_employee').": ".$employee; ?></div>
-		<?php
+		<?php 
 		if($this->Location->get_info_for_key('enable_credit_card_processing'))
 		{
 			echo '<div id="mercahnt_id">'.lang('config_merchant_id').': '.$this->Location->get_info_for_key('merchant_id').'</div>';
 		}
 		?>
-
+		
 	</div>
 	<table id="receipt_items">
 	<tr>
 	<th class="left_text_align" style="width:<?php echo $discount_exists ? "33%" : "49%"; ?>;"><?php echo lang('bedrooms_room'); ?></th>
 	<th class="gift_receipt_element left_text_align" style="width:20%;"><?php echo lang('common_price'); ?></th>
 	<th class="left_text_align" style="width:15%;"><?php echo lang('reserve_quantity'); ?></th>
-	<?php if($discount_exists)
+	<?php if($discount_exists) 
     {
 	?>
 	<th class="gift_receipt_element left_text_align" style="width:16%;"><?php echo lang('reserve_discount'); ?></th>
 	<?php
 	}
 	?>
-	<th  class="gift_receipt_element left_right_align" style="width:16%;"><?php echo lang('reserve_total'); ?></th>
+	<th  class="gift_receipt_element right_text_align" style="width:16%;"><?php echo lang('reserve_total'); ?></th>
 	</tr>
 	<?php
 	foreach(array_reverse($cart, true) as $line=>$room)
@@ -80,7 +80,7 @@ if (isset($error_message))
 		<td class="left_text_align"><?php echo $room['name']; ?><?php if ($room['beds']){ ?> (<?php echo lang('bedrooms_beds')." ".$room['beds']; ?>)<?php } ?></td>
 		<td class="gift_receipt_element left_text_align"><?php echo to_currency($room['price']); ?></td>
 		<td class="left_text_align"><?php echo to_quantity($room['quantity']); ?></td>
-		<?php if($discount_exists)
+		<?php if($discount_exists) 
 		{
 		?>
 		<td class="gift_receipt_element left_text_align"><?php echo $room['discount']; ?></td>
@@ -93,7 +93,7 @@ if (isset($error_message))
 	    <tr>
 	    <td colspan="3" align="left"><?php echo $room['description']; ?></td>
 		<td colspan="1" ><?php echo isset($room['serialnumber']) ? $room['serialnumber'] : ''; ?></td>
-
+		
 		<?php if($discount_exists) {?>
 		<td colspan="1"><?php echo '&nbsp;'; ?></td>
 		<?php } ?>
@@ -108,18 +108,18 @@ if (isset($error_message))
 	</tr>
 
 	<?php if ($this->config->item('group_all_taxes_on_receipt')) { ?>
-		<?php
+		<?php 
 		$total_tax = 0;
-		foreach($taxes as $name=>$value)
+		foreach($taxes as $name=>$value) 
 		{
 			$total_tax+=$value;
 	 	}
-		?>
+		?>	
 		<tr class="gift_receipt_element">
 			<td class="right_text_align" colspan="<?php echo $discount_exists ? '4' : '3'; ?>"><?php echo lang('reports_tax'); ?>:</td>
 			<td class="right_text_align" colspan="1"><?php echo to_currency($total_tax); ?></td>
 		</tr>
-
+		
 	<?php }else {?>
 		<?php foreach($taxes as $name=>$value) { ?>
 			<tr class="gift_receipt_element">
@@ -141,17 +141,17 @@ if (isset($error_message))
 	{ ?>
 		<tr class="gift_receipt_element">
 		<td class="right_text_align" colspan="<?php echo $discount_exists ? '3' : '2'; ?>"><?php echo (isset($show_payment_times) && $show_payment_times) ?  date(get_date_format().' '.get_time_format(), strtotime($payment['payment_date'])) : lang('reserve_payment'); ?></td>
-
+		
 		<?php if ($is_integrated_credit_reserve || reserve_has_partial_credit_card_payment()) { ?>
 			<td class="right_text_align" colspan="1"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?>: <?php echo $payment['card_issuer']. ' '.$payment['truncated_card']; ?></td>
 		<?php } else { ?>
-			<td class="right_text_align" colspan="1"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> </td>
+			<td class="right_text_align" colspan="1"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> </td>											
 		<?php } ?>
 		<td class="right_text_align" colspan="1"><?php echo $this->config->item('round_cash_on_sales') && $payment['payment_type'] == lang('reserve_cash') ?  to_currency(round_to_nearest_05($payment['payment_amount'])) : to_currency($payment['payment_amount']); ?>  </td>
 		</tr>
 	<?php
 	}
-	?>
+	?>	
     <tr><td colspan="<?php echo $discount_exists ? '5' : '4'; ?>">&nbsp;</td></tr>
 
 	<?php foreach($payments as $payment) {?>
@@ -164,7 +164,7 @@ if (isset($error_message))
 	</tr>
 		<?php }?>
 	<?php }?>
-
+	
 	<?php if ($amount_change >= 0) {?>
 	<tr class="gift_receipt_element">
 		<td class="right_text_align" colspan="<?php echo $discount_exists ? '4' : '3'; ?>"><?php echo lang('reserve_change_due'); ?></td>
@@ -179,9 +179,9 @@ if (isset($error_message))
 	<tr>
 		<td class="right_text_align" colspan="<?php echo $discount_exists ? '4' : '3'; ?>"><?php echo lang('reserve_amount_due'); ?></td>
 		<td class="right_text_align" colspan="1"><?php echo $this->config->item('round_cash_on_sales')  && $is_reserve_cash_payment ?  to_currency(round_to_nearest_05($amount_change * -1)) : to_currency($amount_change * -1); ?></td>
-	</tr>
+	</tr>	
 	<?php
-	}
+	} 
 	?>
 	<?php if (isset($customer_balance_for_sale) && $customer_balance_for_sale !== FALSE) {?>
 	<tr>
@@ -192,7 +192,7 @@ if (isset($error_message))
 	<?php
 	}
 	?>
-
+	
 	<?php
 	if ($ref_no)
 	{
@@ -200,7 +200,7 @@ if (isset($error_message))
 	<tr>
 		<td class="right_text_align" colspan="<?php echo $discount_exists ? '4' : '3'; ?>"><?php echo lang('reserve_ref_no'); ?></td>
 		<td class="right_text_align" colspan="1"><?php echo $ref_no; ?></td>
-	</tr>
+	</tr>	
 	<?php
 	}
 	if (isset($auth_code) && $auth_code)
@@ -209,11 +209,11 @@ if (isset($error_message))
 	<tr>
 		<td class="right_text_align" colspan="<?php echo $discount_exists ? '4' : '3'; ?>"><?php echo lang('reserve_auth_code'); ?></td>
 		<td class="right_text_align" colspan="1"><?php echo $auth_code; ?></td>
-	</tr>
+	</tr>	
 	<?php
 	}
 	?>
-
+	
 	<tr>
 		<td colspan="<?php echo $discount_exists ? '5' : '4'; ?>" align="right">
 		<?php if($show_comment_on_receipt==1)
@@ -227,34 +227,34 @@ if (isset($error_message))
 
 	<div id="sale_return_policy">
 	<?php echo nl2br($this->config->item('return_policy')); ?>
-   <br />
+   <br />   
 
 	</div>
-
+	
 	<?php if (!$this->config->item('hide_barcode_on_sales_and_recv_receipt')) {?>
 		<div id='barcode'>
 		<?php echo "<img src='".site_url('barcode')."?barcode=$reservation_id&text=$reservation_id' />"; ?>
 		</div>
 	<?php } ?>
 	<?php if(!$this->config->item('hide_signature')) { ?>
-
+	
 	<div id="signature">
-
+	
 	<?php foreach($payments as $payment) {?>
 		<?php  if ( !empty($payment['payment_type']) && lang('reserve_credit')!='' && strpos($payment['payment_type'], lang('reserve_credit'))!== FALSE) {?>
-			<?php echo lang('reserve_signature'); ?> --------------------------------- <br />
-			<?php
+			<?php echo lang('reserve_signature'); ?> --------------------------------- <br />	
+			<?php 
 			echo lang('reserve_card_statement');
 			break;
 			?>
-
+	
 		<?php }?>
 	<?php }?>
-
+	
 	</div>
 	<?php } ?>
-
-	<?php
+	
+	<?php 
 	 if (!$store_account_payment && $this->Employee->has_module_action_permission('reserve', 'edit_sale', $this->Employee->get_logged_in_employee_info()->person_id)){
 
 	echo form_open("reserve/change_reservation/".$reservation_id_raw,array('id'=>'reservations_change_form')); ?>
@@ -264,7 +264,7 @@ if (isset($error_message))
 	</form>
 
 <button class="btn btn-primary text-white hidden-print" id="print_button" onclick="print_receipt()" > <?php echo lang('reserve_print'); ?> </button>
-
+	
 <span class="hidden-print">
 	<?php
 	echo form_checkbox(array(
@@ -289,11 +289,11 @@ if (isset($error_message))
 	<?php }?>
 
 <button class="btn btn-primary text-white hidden-print" id="new_sale_button_2" onclick="window.location='<?php echo site_url('reserve'); ?>'" > <?php echo lang('reserve_new_reserve'); ?> </button>
-
+	
 </div>
 
 <div id="duplicate_receipt_holder">
-
+	
 </div>
 <?php $this->load->view("partial/footer"); ?>
 
@@ -315,9 +315,9 @@ $(document).ready(function(){
 		$.get($(this).attr('href'), function()
 		{
 			gritter(<?php echo json_encode(lang('common_success')); ?>,'<?php echo lang('reserve_receipt_sent'); ?>','gritter-item-success',false,false);
-
+			
 		});
-
+		
 		return false;
 	});
 });
@@ -339,27 +339,27 @@ function print_receipt()
  {
  	window.print();
  }
-
+ 
  function toggle_gift_receipt()
  {
 	 var gift_receipt_text = <?php echo json_encode(lang('reserve_gift_receipt')); ?>;
 	 var regular_receipt_text = <?php echo json_encode(lang('reserve_regular_receipt')); ?>;
-
+	 
 	 if ($("#gift_receipt_button").hasClass('regular_receipt'))
 	 {
-		 $('#gift_receipt_button').addClass('gift_receipt');
+		 $('#gift_receipt_button').addClass('gift_receipt');	 	
 		 $('#gift_receipt_button').removeClass('regular_receipt');
-		 $("#gift_receipt_button").text(gift_receipt_text);
-		 $('.gift_receipt_element').show();
+		 $("#gift_receipt_button").text(gift_receipt_text);	
+		 $('.gift_receipt_element').show();	
 	 }
 	 else
 	 {
-		 $('#gift_receipt_button').removeClass('gift_receipt');
+		 $('#gift_receipt_button').removeClass('gift_receipt');	 	
 		 $('#gift_receipt_button').addClass('regular_receipt');
 		 $("#gift_receipt_button").text(regular_receipt_text);
-		 $('.gift_receipt_element').hide();
+		 $('.gift_receipt_element').hide();	
 	 }
-
+ 	
  }
 </script>
 
@@ -390,16 +390,16 @@ gritter(<?php echo json_encode(lang('common_success')); ?>, <?php echo json_enco
 <?php echo lang('customers_customer').": ".$customer; ?>
 
 <?php if(!empty($customer_address_1)){ ?><?php echo lang('common_address'); ?>: <?php echo $customer_address_1. ' '.$customer_address_2; ?>
-
+	
 <?php } ?>
 <?php if (!empty($customer_city)) { echo $customer_city.' '.$customer_state.', '.$customer_zip; ?>
 
 <?php } ?>
 <?php if (!empty($customer_country)) { echo $customer_country; ?>
-
+	
 <?php } ?>
 <?php if(!empty($customer_phone)){ ?><?php echo lang('common_phone_number'); ?> : <?php echo $customer_phone; ?>
-
+	
 <?php } ?>
 <?php if(!empty($customer_email)){ ?><?php echo lang('common_email'); ?> : <?php echo $customer_email; ?><?php } ?>
 
@@ -414,7 +414,7 @@ gritter(<?php echo json_encode(lang('common_success')); ?>, <?php echo json_enco
 
 <?php echo lang('employees_employee').": ".$employee; ?>
 
-<?php
+<?php 
 if($this->Location->get_info_for_key('enable_credit_card_processing'))
 {
 	echo lang('config_merchant_id').': '.$this->Location->get_info_for_key('merchant_id');
@@ -431,7 +431,7 @@ foreach(array_reverse($cart, true) as $line=>$room)
 <?php echo character_limiter($room['name'], 14,'...'); ?><?php echo strlen($room['name']) < 14 ? str_repeat(' ', 14 - strlen($room['name'])) : ''; ?> <?php echo str_replace('&#8209;', '-', to_currency($room['price'])); ?> <?php echo to_quantity($room['quantity']); ?><?php if($discount_exists){echo ' '.$room['discount'];}?> <?php echo str_replace('&#8209;', '-', to_currency($room['price']*$room['quantity']-$room['price']*$room['quantity']*$room['discount']/100)); ?>
 
   <?php echo $room['description']; ?>  <?php echo isset($room['serialnumber']) ? $room['serialnumber'] : ''; ?>
-
+	
 
 <?php
 }
@@ -454,7 +454,7 @@ foreach(array_reverse($cart, true) as $line=>$room)
 <?php echo (isset($show_payment_times) && $show_payment_times) ?  date(get_date_format().' '.get_time_format(), strtotime($payment['payment_date'])) : lang('reserve_payment'); ?>  <?php if ($is_integrated_credit_reserve || reserve_has_partial_credit_card_payment()) { ?><?php $splitpayment=explode(':',$payment['payment_type']);echo $splitpayment[0]; ?>: <?php echo $payment['card_issuer']. ' '.$payment['truncated_card']; ?> <?php } else { ?><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> <?php } ?><?php echo $this->config->item('round_cash_on_sales') && $payment['payment_type'] == lang('reserve_cash') ?  str_replace('&#8209;', '-', to_currency(round_to_nearest_05($payment['payment_amount']))) : str_replace('&#8209;', '-', to_currency($payment['payment_amount'])); ?>
 <?php
 }
-?>
+?>	
 
 <?php foreach($payments as $payment) { $giftcard_payment_row = explode(':', $payment['payment_type']);?>
 <?php if (strpos($payment['payment_type'], lang('reserve_giftcard'))!== FALSE) {?><?php echo lang('reserve_giftcard_balance'); ?>  <?php echo $payment['payment_type'];?>: <?php echo str_replace('&#8209;', '-', to_currency($this->Giftcard->get_giftcard_value(end($giftcard_payment_row)))); ?>
@@ -470,10 +470,10 @@ else
 ?>
 <?php echo lang('reserve_amount_due'); ?>: <?php echo $this->config->item('round_cash_on_sales')  && $is_reserve_cash_payment ?  str_replace('&#8209;', '-', to_currency(round_to_nearest_05($amount_change * -1))) : str_replace('&#8209;', '-', to_currency($amount_change * -1)); ?>
 <?php
-}
+} 
 ?>
 <?php if (isset($customer_balance_for_sale) && $customer_balance_for_sale !== FALSE) {?>
-
+	
 <?php echo lang('reserve_customer_account_balance'); ?>: <?php echo to_currency($customer_balance_for_sale); ?>
 <?php
 }
@@ -501,10 +501,10 @@ if (isset($auth_code) && $auth_code)
 <?php if(!$this->config->item('hide_signature')) { ?>
 <?php foreach($payments as $payment) {?>
 	<?php if (strpos($payment['payment_type'], lang('reserve_credit'))!== FALSE) {?>
-
-	<?php echo lang('reserve_signature'); ?>:
+		
+	<?php echo lang('reserve_signature'); ?>: 
 ---------------------------------------
-<?php
+<?php 
 echo lang('reserve_card_statement');
 break;
 ?><?php }?><?php }?><?php } ?></script>

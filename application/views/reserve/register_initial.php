@@ -2,11 +2,11 @@
  <div class="clear"></div>
 
 <div id="sale-grid-big-wrapper" class="clearfix">
-<div class="clearfix" id="category_room_selection_wrapper">
+<div class="clearfix" id="category_item_selection_wrapper">
 	<div class="">
 		<div class="pagination hidden-print alternate text-center fg-toolbar ui-toolbar">
 		</div>
-		<div id="category_room_selection" class="row">
+		<div id="category_item_selection" class="row">
 		</div>
 		<div class="pagination hidden-print alternate text-center fg-toolbar ui-toolbar">
 		</div>
@@ -34,14 +34,14 @@ $(document).ready(function()
 {
 	$("#show_grid").click(function()
 	{
-		$("#category_room_selection_wrapper").slideDown();
+		$("#category_item_selection_wrapper").slideDown();
 		$("#show_grid").hide();
 		$("#hide_grid").show();
 	});
 
 	$("#hide_grid,#hide_grid_top").click(function()
 	{
-		$("#category_room_selection_wrapper").slideUp();
+		$("#category_item_selection_wrapper").slideUp();
 		$("#show_grid").show();
 		$("#hide_grid").hide();
 	});
@@ -62,7 +62,7 @@ $(document).ready(function()
 
 	$(document).on('click', ".pagination.categories a", function(event)
 	{
-		$("#category_room_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
+		$("#category_item_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
 		event.preventDefault();
 		var offset = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
 
@@ -75,7 +75,7 @@ $(document).ready(function()
 
 	$(document).on('click', ".pagination.items a", function(event)
 	{
-		$("#category_room_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
+		$("#category_item_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
 		event.preventDefault();
 		var offset = $(this).attr('href').substring($(this).attr('href').lastIndexOf('/') + 1);
 
@@ -85,9 +85,9 @@ $(document).ready(function()
 		}, "json");
 	});
 
-	$('#category_room_selection_wrapper').on('click','.category_item.category', function(event)
+	$('#category_item_selection_wrapper').on('click','.category_item.category', function(event)
 	{
-		$("#category_room_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
+		$("#category_item_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
 
 		event.preventDefault();
 		current_category = $(this).text();
@@ -97,26 +97,26 @@ $(document).ready(function()
 		}, "json");
 	});
 
-	$('#category_room_selection_wrapper').on('click','.category_item.item', function(event)
+	$('#category_item_selection_wrapper').on('click','.category_item.item', function(event)
 	{
-		$("#category_room_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
+		$("#category_item_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
 		event.preventDefault();
-		$( "#item" ).val($(this).data('id'));
+		$( "#room" ).val($(this).data('id'));
 		$('#add_room_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit, success: function()
 		{
 			<?php
 			if (!$this->config->item('disable_sale_notifications'))
 			{
-				echo "gritter(".json_encode(lang('common_success')).",".json_encode(lang('items_successful_adding')).",'gritter-item-success',false,false);";
+				echo "gritter(".json_encode(lang('common_success')).",".json_encode(lang('bedrooms_successful_adding')).",'gritter-item-success',false,false);";
 			}
 			?>
-			$("#category_room_selection_wrapper").unmask();
+			$("#category_item_selection_wrapper").unmask();
 		}});
 	});
 
-	$("#category_room_selection_wrapper").on('click', '#back_to_categories', function(event)
+	$("#category_item_selection_wrapper").on('click', '#back_to_categories', function(event)
 	{
-		$("#category_room_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
+		$("#category_item_selection_wrapper").mask(<?php echo json_encode(lang('common_wait')); ?>);
 
 		event.preventDefault();
 		load_categories();
@@ -124,29 +124,29 @@ $(document).ready(function()
 
 	function processCategoriesResult(json)
 	{
-		$("#category_room_selection_wrapper .pagination").removeClass('items').addClass('categories');
-		$("#category_room_selection_wrapper .pagination").html(json.pagination);
+		$("#category_item_selection_wrapper .pagination").removeClass('items').addClass('categories');
+		$("#category_item_selection_wrapper .pagination").html(json.pagination);
 
-		$("#category_room_selection").html('');
+		$("#category_item_selection").html('');
 
 		for(var k=0;k<json.categories.length;k++)
 		{
 			 var category_item = $("<div/>").attr('class', 'category_item category col-md-2 col-sm-3 col-xs-6').append('<p>'+json.categories[k]+'</p>');
-			$("#category_room_selection").append(category_item);
+			$("#category_item_selection").append(category_item);
 		}
 
-		$("#category_room_selection_wrapper").unmask();
+		$("#category_item_selection_wrapper").unmask();
 	}
 
 	function processItemsResult(json)
 	{
-		$("#category_room_selection_wrapper .pagination").removeClass('categories').addClass('items');
-		$("#category_room_selection_wrapper .pagination").html(json.pagination);
+		$("#category_item_selection_wrapper .pagination").removeClass('categories').addClass('items');
+		$("#category_item_selection_wrapper .pagination").html(json.pagination);
 
-		$("#category_room_selection").html('');
+		$("#category_item_selection").html('');
 
 		var back_to_categories_button = $("<div/>").attr('id', 'back_to_categories').attr('class', 'category_item back-to-categories col-md-2 col-sm-3 col-xs-6 ').append('<p>&laquo; '+<?php echo json_encode(lang('reserve_back_to_categories')); ?>+'</p>');
-		$("#category_room_selection").append(back_to_categories_button);
+		$("#category_item_selection").append(back_to_categories_button);
 
 		for(var k=0;k<json.items.length;k++)
 		{
@@ -159,11 +159,11 @@ $(document).ready(function()
 			}
 
 			var item = $("<div/>").attr('class', 'category_item item col-md-2 col-sm-3 col-xs-6  '+item_parent_class).attr('data-id', json.items[k].id).append(prod_image+'<p>'+json.items[k].name+'</p>');
-			$("#category_room_selection").append(item);
+			$("#category_item_selection").append(item);
 			var d_id = json.items[k].id;
 		}
 
-		$("#category_room_selection_wrapper").unmask();
+		$("#category_item_selection_wrapper").unmask();
 
 	}
 	load_categories();

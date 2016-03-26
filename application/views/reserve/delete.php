@@ -12,20 +12,20 @@
 			<div class="widget-box">
 				<div class="widget-title">
 					<span class="icon">
-						<i class="fa fa-align-justify"></i>
+						<i class="fa fa-align-justify"></i>									
 					</span>
 					<h5><?php echo lang("reserve_delete_successful"); ?></h5>
 				</div>
 				<div class="widget-content nopadding">
 					<br />
 					<br />
-
-<?php
+					
+<?php 
 if ($success)
 {
 ?>
 	<h1 class="text-warning text-center"><?php echo lang('reserve_delete_successful'); ?></h1>
-<?php
+<?php	
 }
 else
 {

@@ -9,7 +9,7 @@ class Bedrooms extends Secure_area implements iData_controller
 	}
 
 	function index($offset=0)
-	{
+	{	
 		$params = $this->session->userdata('room_search_data') ? $this->session->userdata('room_search_data') : array('offset' => 0, 'order_col' => 'room_id', 'order_dir' => 'asc', 'search' => FALSE, 'category' => FALSE);
 		if ($offset!=$params['offset'])
 		{
@@ -18,12 +18,12 @@ class Bedrooms extends Secure_area implements iData_controller
 
 		$this->check_action_permission('search');
 		$config['base_url'] = site_url('bedrooms/sorting');
-		$config['per_page'] = $this->config->item('number_of_bedrooms_per_page') ? (int)$this->config->item('number_of_bedrooms_per_page') : 20;
+		$config['per_page'] = $this->config->item('number_of_items_per_page') ? (int)$this->config->item('number_of_items_per_page') : 20; 
 		$data['controller_name']=strtolower(get_class());
 		$data['per_page'] = $config['per_page'];
 		$data['search'] = $params['search'] ? $params['search'] : "";
 		$data['category'] = $params['category'] ? $params['category'] : "";
-
+		
 		if ($data['search'] || $data['category'])
 		{
 
@@ -41,9 +41,9 @@ class Bedrooms extends Secure_area implements iData_controller
 		$data['pagination'] = $this->pagination->create_links();
 		$data['order_col'] = $params['order_col'];
 		$data['order_dir'] = $params['order_dir'];
-
-
-
+		
+		
+		
 		$data['manage_table']=get_bedrooms_manage_table($table_data,$this);
 		$data['categories'][''] = '--'.lang('bedrooms_select_category_or_all').'--';
 		foreach($this->Room->get_all_categories()->result() as $category)
@@ -51,7 +51,7 @@ class Bedrooms extends Secure_area implements iData_controller
 			$category = $category->category;
 			$data['categories'][$category] = $category;
 		}
-
+		
 		$this->load->view('bedrooms/manage',$data);
 	}
 
@@ -60,8 +60,8 @@ class Bedrooms extends Secure_area implements iData_controller
 		$this->check_action_permission('search');
 		$search=$this->input->post('search') ? $this->input->post('search') : "";
 		$category = $this->input->post('category');
-
-		$per_page=$this->config->item('number_of_bedrooms_per_page') ? (int)$this->config->item('number_of_bedrooms_per_page') : 20;
+		
+		$per_page=$this->config->item('number_of_items_per_page') ? (int)$this->config->item('number_of_items_per_page') : 20;
 		$offset = $this->input->post('offset') ? $this->input->post('offset') : 0;
 		$order_col = $this->input->post('order_col') ? $this->input->post('order_col') : 'name';
 		$order_dir = $this->input->post('order_dir') ? $this->input->post('order_dir'): 'asc';
@@ -79,30 +79,30 @@ class Bedrooms extends Secure_area implements iData_controller
 			$table_data = $this->Room->get_all($per_page,$this->input->post('offset') ? $this->input->post('offset') : 0, $this->input->post('order_col') ? $this->input->post('order_col') : 'name' ,$this->input->post('order_dir') ? $this->input->post('order_dir'): 'asc');
 		}
 		$config['base_url'] = site_url('bedrooms/sorting');
-		$config['per_page'] = $per_page;
+		$config['per_page'] = $per_page; 
 		$this->pagination->initialize($config);
 		$data['pagination'] = $this->pagination->create_links();
 		$data['manage_table']=get_bedrooms_manage_table_data_rows($table_data,$this);
-		echo json_encode(array('manage_table' => $data['manage_table'], 'pagination' => $data['pagination']));
+		echo json_encode(array('manage_table' => $data['manage_table'], 'pagination' => $data['pagination']));	
 	}
 
-
+	
 	function find_room_info()
 	{
 		$room_number=$this->input->post('scan_room_number');
 		echo json_encode($this->Room->find_room_info($room_number));
 	}
-
+		
 	function room_number_exists()
 	{
 		if($this->Room->account_number_exists($this->input->post('room_number')))
 		echo 'false';
 		else
 		echo 'true';
-
+		
 	}
 
-
+	
 	function check_duplicate()
 	{
 		echo json_encode(array('duplicate'=>$this->Room->check_duplicate($this->input->post('term'))));
@@ -116,15 +116,15 @@ class Bedrooms extends Secure_area implements iData_controller
 		$offset = $this->input->post('offset') ? $this->input->post('offset') : 0;
 		$order_col = $this->input->post('order_col') ? $this->input->post('order_col') : 'name';
 		$order_dir = $this->input->post('order_dir') ? $this->input->post('order_dir'): 'asc';
-
+		
 		$room_search_data = array('offset' => $offset, 'order_col' => $order_col, 'order_dir' => $order_dir, 'search' => $search,  'category' => $category);
 		$this->session->set_userdata("room_search_data",$room_search_data);
-		$per_page=$this->config->item('number_of_bedrooms_per_page') ? (int)$this->config->item('number_of_bedrooms_per_page') : 20;
+		$per_page=$this->config->item('number_of_items_per_page') ? (int)$this->config->item('number_of_items_per_page') : 20;
 		$search_data=$this->Room->search($search, $category, $per_page,$this->input->post('offset') ? $this->input->post('offset') : 0, $this->input->post('order_col') ? $this->input->post('order_col') : 'name' ,$this->input->post('order_dir') ? $this->input->post('order_dir'): 'asc');
 		$config['base_url'] = site_url('bedrooms/search');
 		$config['total_rows'] = $this->Room->search_count_all($search, $category);
 		$config['per_page'] = $per_page ;
-		$this->pagination->initialize($config);
+		$this->pagination->initialize($config);				
 		$data['pagination'] = $this->pagination->create_links();
 		$data['manage_table']=get_bedrooms_manage_table_data_rows($search_data,$this);
 		echo json_encode(array('manage_table' => $data['manage_table'], 'pagination' => $data['pagination']));
@@ -164,23 +164,23 @@ class Bedrooms extends Secure_area implements iData_controller
 		$data['locations'] = array();
 		$data['location_tier_prices'] = array();
 		$data['additional_room_numbers'] = $this->Additional_room_numbers->get_room_numbers($room_id);
-
+		
 		if ($room_id != -1)
 		{
 			$data['next_room_id'] = $this->Room->get_next_id($room_id);
 			$data['prev_room_id'] = $this->Room->get_prev_id($room_id);;
 		}
-
+			
 		foreach($this->Location->get_all()->result() as $location)
 		{
 			if($this->Employee->is_location_authenticated($location->location_id))
-			{
+			{				
 				$data['locations'][] = $location;
 				$data['location_bedrooms'][$location->location_id] = $this->Room_location->get_info($room_id,$location->location_id);
 				$data['location_taxes'][$location->location_id] = $this->Room_location_taxes->get_info($room_id, $location->location_id);
-
+								
 				foreach($data['tiers'] as $tier)
-				{
+				{					
 					$tier_prices = $this->Room_location->get_tier_price_row($tier->id,$data['room_info']->room_id, $location->location_id);
 					if (!empty($tier_prices))
 					{
@@ -188,16 +188,16 @@ class Bedrooms extends Secure_area implements iData_controller
 					}
 					else
 					{
-						$data['location_tier_prices'][$location->location_id][$tier->id] = FALSE;
+						$data['location_tier_prices'][$location->location_id][$tier->id] = FALSE;			
 					}
 				}
 			}
-
+			
 		}
-
+				
 		$data['redirect']=$redirect;
 		$data['sale_or_receiving']=$sale_or_receiving;
-
+		
 		$data['tier_prices'] = array();
 		$data['tier_type_options'] = array('unit_price' => lang('bedrooms_fixed_price'), 'percent_off' => lang('bedrooms_percent_off'));
 		foreach($data['tiers'] as $tier)
@@ -209,7 +209,7 @@ class Bedrooms extends Secure_area implements iData_controller
 			}
 			else
 			{
-				$data['tier_prices'][$tier->id] = FALSE;
+				$data['tier_prices'][$tier->id] = FALSE;			
 			}
 		}
 
@@ -224,26 +224,26 @@ class Bedrooms extends Secure_area implements iData_controller
 		$data['controller_name']=strtolower(get_class());
 		$data['redirect']=2;
 		$data['room_info']=$this->Room->get_info($room_id);
-
+		
 		//Unset unique identifiers
 		$data['room_info']->room_number = '';
-
+		
 		$data['room_tax_info']=$this->Room_taxes->get_info($room_id);
 		$data['tiers']=$this->Tier->get_all()->result();
 		$data['locations'] = array();
 		$data['location_tier_prices'] = array();
 		$data['additional_room_numbers'] = FALSE;
-
+		
 		foreach($this->Location->get_all()->result() as $location)
 		{
 			if($this->Employee->is_location_authenticated($location->location_id))
-			{
+			{				
 				$data['locations'][] = $location;
 				$data['location_bedrooms'][$location->location_id] = $this->Room_location->get_info($room_id,$location->location_id);
 				$data['location_taxes'][$location->location_id] = $this->Room_location_taxes->get_info($room_id, $location->location_id);
-
+								
 				foreach($data['tiers'] as $tier)
-				{
+				{					
 					$tier_prices = $this->Room_location->get_tier_price_row($tier->id,$data['room_info']->room_id, $location->location_id);
 					if (!empty($tier_prices))
 					{
@@ -251,26 +251,26 @@ class Bedrooms extends Secure_area implements iData_controller
 					}
 					else
 					{
-						$data['location_tier_prices'][$location->location_id][$tier->id] = FALSE;
+						$data['location_tier_prices'][$location->location_id][$tier->id] = FALSE;			
 					}
 				}
 			}
-
+			
 		}
-
+				
 		$data['tier_prices'] = array();
-		$data['tier_type_options'] = array('unit_price' => lang('bedrooms_fixed_price'), 'percent_off' => lang('bedrooms_percent_off'));
+		$data['tier_type_options'] = array('unit_price' => lang('items_fixed_price'), 'percent_off' => lang('items_percent_off'));
 		foreach($data['tiers'] as $tier)
 		{
 			$tier_prices = $this->Item->get_tier_price_row($tier->id,$data['room_info']->room_id);
-
+			
 			if (!empty($tier_prices))
 			{
 				$data['tier_prices'][$tier->id] = $tier_prices;
 			}
 			else
 			{
-				$data['tier_prices'][$tier->id] = FALSE;
+				$data['tier_prices'][$tier->id] = FALSE;			
 			}
 		}
 
@@ -289,7 +289,7 @@ class Bedrooms extends Secure_area implements iData_controller
 
 	function save($room_id=-1)
 	{
-		$this->check_action_permission('add_update');
+		$this->check_action_permission('add_update');		
 		$room_data = array(
 		'name'=>$this->input->post('name'),
 		'description'=>$this->input->post('description'),
@@ -304,7 +304,7 @@ class Bedrooms extends Secure_area implements iData_controller
 		'is_service'=>$this->input->post('is_service') ? $this->input->post('is_service') : 0 ,
 		'override_default_tax'=> $this->input->post('override_default_tax') ? $this->input->post('override_default_tax') : 0,
 		);
-
+		
 		if ($this->input->post('override_default_commission'))
 		{
 			if ($this->input->post('commission_type') == 'fixed')
@@ -323,7 +323,7 @@ class Bedrooms extends Secure_area implements iData_controller
 			$room_data['commission_percent'] = NULL;
 			$room_data['commission_fixed'] = NULL;
 		}
-
+		
 		$employee_id=$this->Employee->get_logged_in_employee_info()->person_id;
 		$cur_room_info = $this->Room->get_info($room_id);
 
@@ -332,12 +332,12 @@ class Bedrooms extends Secure_area implements iData_controller
 
 		if($this->Room->save($room_data,$room_id))
 		{
-
+			
 			$success_message = '';
-
+			
 			//New room
 			if($room_id==-1)
-			{
+			{	
 				$success_message = lang('bedrooms_successful_adding').' '.$room_data['name'];
 				$this->session->set_flashdata('manage_success_message', $success_message);
 				echo json_encode(array('success'=>true,'message'=>$success_message,'room_id'=>$room_data['room_id'],'redirect' => $redirect, 'sale_or_receiving'=>$sale_or_receiving));
@@ -349,7 +349,7 @@ class Bedrooms extends Secure_area implements iData_controller
 				$this->session->set_flashdata('manage_success_message', $success_message);
 				echo json_encode(array('success'=>true,'message'=>$success_message,'room_id'=>$room_id,'redirect' => $redirect, 'sale_or_receiving'=>$sale_or_receiving));
 			}
-
+			
 			if ($this->input->post('additional_room_numbers') && is_array($this->input->post('additional_room_numbers')))
 			{
 				$this->Additional_room_numbers->save($room_id, $this->input->post('additional_room_numbers'));
@@ -358,13 +358,13 @@ class Bedrooms extends Secure_area implements iData_controller
 			{
 				$this->Additional_room_numbers->delete($room_id);
 			}
-
+			
 			if ($this->input->post('locations'))
 			{
 				foreach($this->input->post('locations') as $location_id => $room_location_data)
-				{
+				{		        
 					$override_prices = isset($room_location_data['override_prices']) && $room_location_data['override_prices'];
-
+				
 					$room_location_before_save = $this->Room_location->get_info($room_id,$location_id);
 					$data = array(
 						'location_id' => $location_id,
@@ -380,7 +380,7 @@ class Bedrooms extends Secure_area implements iData_controller
 						'override_default_tax'=> isset($room_location_data['override_default_tax'] ) && $room_location_data['override_default_tax'] != '' ? $room_location_data['override_default_tax'] : 0,
 					);
 					$this->Room_location->save($data, $room_id,$location_id);
-
+					
 
 					if (isset($room_location_data['room_tier']))
 					{
@@ -390,11 +390,11 @@ class Bedrooms extends Secure_area implements iData_controller
 						{
 							//If we are overriding prices and we have a price/percent, add..otherwise delete
 							if ($override_prices && $price_or_percent)
-							{
+							{				
 								$tier_data=array('tier_id'=>$tier_id);
 								$tier_data['room_id'] = isset($room_data['room_id']) ? $room_data['room_id'] : $room_id;
 								$tier_data['location_id'] = $location_id;
-
+							
 								if ($tier_type[$tier_id] == 'unit_price')
 								{
 									$tier_data['unit_price'] = $price_or_percent;
@@ -415,8 +415,8 @@ class Bedrooms extends Secure_area implements iData_controller
 
 						}
 					}
-
-
+									
+				
 					if (isset($room_location_data['tax_names']))
 					{
 						$location_bedrooms_taxes_data = array();
@@ -432,20 +432,20 @@ class Bedrooms extends Secure_area implements iData_controller
 						}
 						$this->Room_location_taxes->save($location_bedrooms_taxes_data, $room_id, $location_id);
 					}
-
-					if ($room_location_data['quantity'] != '' && !$this->input->post('is_service') && $room_location_data['quantity'] != $room_location_before_save->quantity)
-					{
-						$inv_data = array
-							(
-							'trans_date'=>date('Y-m-d H:i:s'),
-							'trans_room'=>$room_id,
-							'trans_user'=>$employee_id,
-							'trans_comment'=>lang('bedrooms_manually_editing_of_quantity'),
-							'trans_inventory'=>$room_location_data['quantity'] - $room_location_before_save->quantity,
-							'location_id' => $location_id,
-						);
-						$this->Bedrooms_inventory->insert($inv_data);
-					}
+					
+					// if ($room_location_data['quantity'] != '' && !$this->input->post('is_service') && $room_location_data['quantity'] != $room_location_before_save->quantity)
+					// {
+					// 	$inv_data = array
+					// 		(
+					// 		'trans_date'=>date('Y-m-d H:i:s'),
+					// 		'trans_room'=>$room_id,
+					// 		'trans_user'=>$employee_id,
+					// 		'trans_comment'=>lang('bedrooms_manually_editing_of_quantity'),
+					// 		'trans_inventory'=>$room_location_data['quantity'] - $room_location_before_save->quantity,
+					// 		'location_id' => $location_id,
+					// 	);
+					// 	$this->Bedrooms_inventory->insert($inv_data);
+					// }
 				}
 			}
 			$bedrooms_taxes_data = array();
@@ -460,8 +460,8 @@ class Bedrooms extends Secure_area implements iData_controller
 				}
 			}
 			$this->Room_taxes->save($bedrooms_taxes_data, $room_id);
-
-
+			
+			
 			//Delete Image
 			if($this->input->post('del_image') && $room_id != -1)
 			{
@@ -474,7 +474,7 @@ class Bedrooms extends Secure_area implements iData_controller
 
 			//Save Image File
 			if(!empty($_FILES["image_id"]) && $_FILES["image_id"]["error"] == UPLOAD_ERR_OK)
-			{
+			{			    
 			    $allowed_extensions = array('png', 'jpg', 'jpeg', 'gif');
 				$extension = strtolower(pathinfo($_FILES["image_id"]["name"], PATHINFO_EXTENSION));
 
@@ -486,7 +486,7 @@ class Bedrooms extends Secure_area implements iData_controller
 				    $config['maintain_ratio'] = TRUE;
 				    $config['width']	 = 400;
 				    $config['height']	= 300;
-				    $this->load->library('image_lib', $config);
+				    $this->load->library('image_lib', $config); 
 				    $this->image_lib->resize();
 				    $image_file_id = $this->Appfile->save($_FILES["image_id"]["name"], file_get_contents($_FILES["image_id"]["tmp_name"]));
 			    }
@@ -504,11 +504,11 @@ class Bedrooms extends Secure_area implements iData_controller
 
 	function save_inventory($room_id=-1)
 	{
-		$this->check_action_permission('add_update');
+		$this->check_action_permission('add_update');		
 		$employee_id=$this->Employee->get_logged_in_employee_info()->person_id;
 		$cur_room_info = $this->Room->get_info($room_id);
 		$cur_room_location_info = $this->Room_location->get_info($room_id);
-
+		
 		$inv_data = array
 		(
 			'trans_date'=>date('Y-m-d H:i:s'),
@@ -536,7 +536,7 @@ class Bedrooms extends Secure_area implements iData_controller
 
 	function delete()
 	{
-		$this->check_action_permission('delete');
+		$this->check_action_permission('delete');		
 		$bedrooms_to_delete=$this->input->post('ids');
 		$select_inventory=$this->get_select_inventory();
 		$total_rows= $select_inventory ? $this->Room->count_all() : count($bedrooms_to_delete);
@@ -544,7 +544,7 @@ class Bedrooms extends Secure_area implements iData_controller
 		$this->clear_select_inventory();
 		if($this->Room->delete_list($bedrooms_to_delete,$select_inventory))
 		{
-
+			
 			echo json_encode(array('success'=>true,'message'=>lang('bedrooms_successful_deleted').' '.
 			$total_rows.' '.lang('bedrooms_one_or_multiple')));
 		}
@@ -560,15 +560,15 @@ class Bedrooms extends Secure_area implements iData_controller
 		echo json_encode(array('success'=>true,'message'=>lang('bedrooms_cleanup_sucessful')));
 	}
 
-	function get_select_inventory()
+	function get_select_inventory() 
 	{
 		return $this->session->userdata('select_inventory') ? $this->session->userdata('select_inventory') : 0;
 	}
 
-	function clear_select_inventory()
+	function clear_select_inventory() 	
 	{
 		$this->session->unset_userdata('select_inventory');
-
+		
 	}
 }
 ?>

@@ -3,7 +3,7 @@
 		<?php echo lang('reserve_register'); ?> <span id="ajax-loader"><?php echo img(array('src' => base_url().'/img/ajax-loader.gif')); ?></span>
 		<?php if($this->reserve_lib->get_change_reservation_id()) { ?>
 		<small>
-			<?php echo lang('reserve_editing_reserve'); ?> <b> ss<?php echo $this->config->item('reserve_prefix').' '.$this->reserve_lib->get_change_reservation_id(); ?> </b>
+			<?php echo lang('reserve_editing_reserve'); ?> <b> ss<?php echo $this->config->item('sale_prefix').' '.$this->reserve_lib->get_change_reservation_id(); ?> </b>
 		</small>
 		<?php } ?>
 	</h1>
@@ -15,14 +15,14 @@
 <div class="clear"></div>
 	<!--Left small box-->
 	<div class="row">
-		<div class="reserve_register_leftbox col-md-9">
+		<div class="sales_register_leftbox col-md-9">
 			<div class="row forms-area">
 				<?php if ($mode != 'store_account_payment') { ?>
 						<div class="col-md-12 no-padd">
 							<div class="input-append">
 								<?php echo form_open("reserve/add",array('id'=>'add_room_form','class'=>'form-inline', 'autocomplete'=> 'off')); ?>
 
-								<?php echo form_input(array('name'=>'item','id'=>'item','class'=>'input-xlarge', 'accesskey' => 'k', 'placeholder' => lang('reserve_start_typing_room_name')));
+								<?php echo form_input(array('name'=>'room','id'=>'room','class'=>'input-xlarge', 'accesskey' => 'k', 'placeholder' => lang('reserve_start_typing_room_name')));
 								?>
 
 								<?php echo anchor("bedrooms/view/-1/1/reserve",
@@ -50,30 +50,30 @@
 						<tr>
 							<th ></th>
 							<th class="room_name_heading" ><?php echo lang('reserve_room_name'); ?></th>
-							<th class="reserve_room reserve_bedrooms_number">
-
+							<th class="sales_item sales_items_number">
+							
 								<?php
-								switch($this->config->item('id_to_show_on_reserve_interface'))
+								switch($this->config->item('id_to_show_on_sale_interface'))
 								{
 									case 'number':
-									echo lang('reserve_room_number') . $this->config->item('id_to_show_on_reserve_interface');
+									echo lang('reserve_room_number'); 
 									break;
 
 									case 'id':
-									echo lang('reserve_room_id') . $this->config->item('id_to_show_on_reserve_interface');
+									echo lang('reserve_room_id'); 
 									break;
 
 									default:
-									echo lang('reserve_room_number') . $this->config->item('id_to_show_on_reserve_interface');
+									echo lang('reserve_room_number'); 
 									break;
 								}
 								?>
 
 							</th>
-							<th class="reserve_stock"><?php echo lang('reserve_stock'); ?></th>
-							<th class="reserve_price"><?php echo lang('reserve_price'); ?></th>
-							<th class="reserve_quality"><?php echo lang('reserve_quantity'); ?></th>
-							<th class="reserve_discount"><?php echo lang('reserve_discount'); ?></th>
+							<th class="sales_stock"><?php echo lang('reserve_stock'); ?></th>
+							<th class="sales_price"><?php echo lang('reserve_price'); ?></th>
+							<th class="sales_quality"><?php echo lang('reserve_quantity'); ?></th>
+							<th class="sales_discount"><?php echo lang('reserve_discount'); ?></th>
 							<th ><?php echo lang('reserve_total'); ?></th>
 						</tr>
 					</thead>
@@ -88,27 +88,27 @@
 						}
 						else
 						{
-							foreach(array_reverse($cart, true) as $line=>$item)
+							foreach(array_reverse($cart, true) as $line=>$room)
 							{
-								$cur_room_location_info = isset($item['room_id']) ? $this->Item_location->get_info($item['room_id']) : $this->Item_kit_location->get_info($item['item_kit_id']);
+								$cur_room_location_info = isset($room['room_id']) ? $this->Room_location->get_info($room['room_id']) : 0;
 								?>
-								<tr id="reg_room_top" bgcolor="#eeeeee" >
+								<tr id="reg_item_top" bgcolor="#eeeeee" >
 									<td><?php echo anchor("reserve/delete_room/$line",'<i class="fa fa-trash-o fa fa-2x text-error"></i>', array('class' => 'delete_room'));?></td>
-									<td class="text text-success"><a href="<?php echo isset($item['room_id']) ? site_url('home/view_room_modal/'.$item['room_id']) : site_url('home/view_room_kit_modal/'.$item['item_kit_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($item['name']); ?></a></td>
+									<td class="text text-success"><a href="<?php echo isset($room['room_id']) ? site_url('home/view_room_modal/'.$room['room_id']) : site_url('home/view_room_kit_modal/'.$room['item_kit_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($room['name']); ?></a></td>
 									<td class="text text-info reserve_room" id="reg_room_number">
 										<?php
-										switch($this->config->item('id_to_show_on_reserve_interface'))
+										switch($this->config->item('id_to_show_on_sale_interface'))
 										{
 											case 'number':
-											echo H($item['room_number']);
+											echo H($room['room_number']);
 											break;
 
 											case 'id':
-											echo H($item['room_id']);
+											echo H($room['room_id']);
 											break;
 
 											default:
-											echo H($item['room_number']);
+											echo H($room['room_number']);
 											break;
 										}
 										?>
@@ -122,7 +122,7 @@
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
 
-										echo form_input(array('name'=>'price','value'=>to_currency_no_money($item['price'], 10),'class'=>'input-small', 'id' => 'price_'.$line));?>
+										echo form_input(array('name'=>'price','value'=>to_currency_no_money($room['price'], 10),'class'=>'input-small', 'id' => 'price_'.$line));?>
 
 										</form>
 
@@ -132,8 +132,8 @@
 									<?php
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
-											echo $item['price'];
-											echo form_hidden('price',$item['price']); ?>
+											echo $room['price'];
+											echo form_hidden('price',$room['price']); ?>
 
 
 										</form>
@@ -145,11 +145,11 @@
 										<?php
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
-												if(isset($item['is_serialized']) && $item['is_serialized']==1){
-													echo to_quantity($item['quantity']);
-													echo form_hidden('quantity',to_quantity($item['quantity']));
+												if(isset($room['is_serialized']) && $room['is_serialized']==1){
+													echo to_quantity($room['quantity']);
+													echo form_hidden('quantity',to_quantity($room['quantity']));
 												}else{
-													echo form_input(array('name'=>'quantity','value'=>to_quantity($item['quantity']),'class'=>'input-small', 'id' => 'quantity_'.$line));
+													echo form_input(array('name'=>'quantity','value'=>to_quantity($room['quantity']),'class'=>'input-small', 'id' => 'quantity_'.$line));
 												}?>
 
 										</form>
@@ -159,7 +159,7 @@
 									<td>
 										<?php
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
-											echo form_input(array('name'=>'discount','value'=>$item['discount'],'class'=>'input-small', 'id' => 'discount_'.$line));?>
+											echo form_input(array('name'=>'discount','value'=>$room['discount'],'class'=>'input-small', 'id' => 'discount_'.$line));?>
 										  </form>
 									</td>
 									<?php }else{ ?>
@@ -167,8 +167,8 @@
 										<?php
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
-											echo $item['discount'];
-											echo form_hidden('discount',$item['discount']);
+											echo $room['discount'];
+											echo form_hidden('discount',$room['discount']);
 								 ?>
 										</form>
 									</td>
@@ -176,7 +176,7 @@
 									<?php }	?>
 
 
-									<td class="text text-main"><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
+									<td class="text text-main"><?php echo to_currency($room['price']*$room['quantity']-$room['price']*$room['quantity']*$room['discount']/100); ?></td>
 								</tr>
 
 								<tr id="reg_room_bottom">
@@ -186,12 +186,12 @@
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
 
-										if(isset($item['allow_alt_description']) && $item['allow_alt_description']==1){
-											echo form_input(array('name'=>'description','value'=>$item['description'],'size'=>'20', 'id' => 'description_'.$line, 'class' =>'description', 'maxlength' => 255));
+										if(isset($room['allow_alt_description']) && $room['allow_alt_description']==1){
+											echo form_input(array('name'=>'description','value'=>$room['description'],'size'=>'20', 'id' => 'description_'.$line, 'class' =>'description', 'maxlength' => 255));
 										}else{
-											if ($item['description']!=''){
-												echo $item['description'];
-												echo form_hidden('description',$item['description']);
+											if ($room['description']!=''){
+												echo $room['description'];
+												echo form_hidden('description',$room['description']);
 											}else{
 												echo 'None';
 												echo form_hidden('description','');
@@ -201,7 +201,7 @@
 									</td>
 									<td >
 
-										<?php if(isset($item['is_serialized']) && $item['is_serialized']==1  && $item['name']!=lang('reserve_giftcard')){
+										<?php if(isset($room['is_serialized']) && $room['is_serialized']==1  && $room['name']!=lang('reserve_giftcard')){
 											echo lang('reserve_serial').':';
 										}?>
 									</td>
@@ -210,8 +210,8 @@
 										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
 
-										    if(isset($item['is_serialized']) && $item['is_serialized']==1  && $item['name']!=lang('reserve_giftcard'))	{
-												echo form_input(array('name'=>'serialnumber','value'=>$item['serialnumber'], 'class' => 'serial_room','size'=>'20', 'id' => 'serialnumber_'.$line, 'maxlength' => 255));
+										    if(isset($room['is_serialized']) && $room['is_serialized']==1  && $room['name']!=lang('reserve_giftcard'))	{
+												echo form_input(array('name'=>'serialnumber','value'=>$room['serialnumber'], 'class' => 'serial_room','size'=>'20', 'id' => 'serialnumber_'.$line, 'maxlength' => 255));
 											}else{
 												echo form_hidden('serialnumber', '');
 											}?>
@@ -239,24 +239,24 @@
 				</thead>
 				<tbody id="cart_contents">
 					<?php
-					foreach(array_reverse($cart, true) as $line=>$item)
+					foreach(array_reverse($cart, true) as $line=>$room)
 					{
-						$cur_room_location_info = isset($item['room_id']) ? $this->Item_location->get_info($item['room_id']) : $this->Item_kit_location->get_info($item['item_kit_id']);
+						$cur_room_location_info = isset($room['room_id']) ? $this->Room_location->get_info($room['room_id']) : 0;
 						?>
 
 
 
 
 
-						<tr id="reg_room_top" bgcolor="#eeeeee" >
-							<td class="text text-success"><a href="<?php echo site_url('bedrooms/view_modal/'.$item['room_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($item['name']); ?></a></td>
+						<tr id="reg_item_top" bgcolor="#eeeeee" >
+							<td class="text text-success"><a href="<?php echo site_url('bedrooms/view_modal/'.$room['room_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($room['name']); ?></a></td>
 							<td>
 								<?php
 								echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
-									echo form_input(array('name'=>'price','value'=>to_currency_no_money($item['price'], 10),'class'=>'input-small', 'id' => 'price_'.$line));
+									echo form_input(array('name'=>'price','value'=>to_currency_no_money($room['price'], 10),'class'=>'input-small', 'id' => 'price_'.$line));
 
-									echo form_hidden('quantity',to_quantity($item['quantity']));
+									echo form_hidden('quantity',to_quantity($room['quantity']));
 									echo form_hidden('description','');
 									echo form_hidden('serialnumber', '');
 								?>
@@ -334,25 +334,25 @@
 
 
 						<?php
-						if (!$this->config->item('hide_customer_recent_reserve') && isset($customer))
+						if (!$this->config->item('hide_customer_recent_sale') && isset($customer))
 						{
 						?>
 						<div class="row hidden-xs">
 							<h1><?php echo lang('reserve_recent_reserve').' '.H($customer);?></h1>
 							<table id="recent_reserve" class="table">
 								<tr>
-									<th align="center"><?php echo lang('bedrooms_date');?></th>
+									<th align="center"><?php echo lang('items_date');?></th>
 									<th align="center"><?php echo lang('reports_payments');?></th>
-									<th align="center"><?php echo lang('reports_bedrooms_purchased');?></th>
+									<th align="center"><?php echo lang('reports_items_purchased');?></th>
 									<th align="center"><?php echo lang('reserve_receipt');?></th>
 								</tr>
 
 								<?php foreach($recent_reserve as $reserve) {?>
 									<tr>
-										<td align="center"><?php echo date(get_date_format().' @ '.get_time_format(), strtotime($reserve['reserve_time']));?></td>
+										<td align="center"><?php echo date(get_date_format().' @ '.get_time_format(), strtotime($reserve['reservation_time']));?></td>
 										<td align="center"><?php echo $reserve['payment_type'];?></td>
 										<td align="center"><?php echo to_quantity($reserve['bedrooms_purchased']);?></td>
-										<td align="center"><?php echo anchor('reserve/receipt/'.$reserve['reserve_id'], lang('reserve_receipt'), array('target' =>'_blank')); ?></td>
+										<td align="center"><?php echo anchor('reserve/receipt/'.$reserve['reservation_id'], lang('reserve_receipt'), array('target' =>'_blank')); ?></td>
 									</tr>
 								<?php } ?>
 							</table>
@@ -363,7 +363,7 @@
 
 					</div>
 					<!-- Right small box  -->
-				<div class="col-md-3 reserve_register_rightbox">
+				<div class="col-md-3 sale_register_rightbox">
 					<ul class="list-group">
 						<li class="list-group-item nopadding">
 							<!-- Cancel and suspend buttons -->
@@ -387,7 +387,7 @@
 							}
 							else
 							{
-								if ($this->config->item('require_customer_for_reserve'))
+								if ($this->config->item('require_customer_for_sale'))
 								{
 									echo lang('reserve_select_customer_required');
 								}
@@ -500,7 +500,7 @@
 							</tr>
 							<?php }; ?>
 							<tr class="success">
-								<td ><h3 class="reserve_totals"><?php echo lang('reserve_total'); ?>:</h3></td>
+								<td ><h3 class="sales_totals"><?php echo lang('reserve_total'); ?>:</h3></td>
 								<td ><h3 class="currency_totals"><?php echo to_currency($total); ?></h3></td>
 							</tr>
 						</table>
@@ -551,7 +551,7 @@
 							<table id="amount_due" class="table">
 								<tr class="<?php if($payments_cover_total) { echo 'success'; } else { echo 'error'; }?>">
 									<td>
-										<h4 class="reserve_amount_due"><?php echo lang('reserve_amount_due'); ?>:</h4>
+										<h4 class="sales_amount_due"><?php echo lang('reserve_amount_due'); ?>:</h4>
 									</td>
 									<td>
 										<h3 class="amount_dues"><?php echo to_currency($amount_due); ?></h3>
@@ -713,10 +713,10 @@
 <div class="row ">
 
 
-<?php if ($this->config->item('select_reserve_person_during_reserve')) {?>
+<?php if ($this->config->item('select_sales_person_during_sale')) {?>
 
 	<div class="col-md-3">
-			<div id="select_reserve_person">
+			<div id="select_sales_person">
 		<?php echo lang('reserve_reserve_person'); ?>:
 		<?php echo form_dropdown('sold_by_employee_id', $employees, $selected_sold_by_employee_id, 'class="form-control" id="sold_by_employee_id"'); ?>
 	</div>
@@ -748,7 +748,7 @@ if ($this->Register->count_all($this->Employee->get_logged_in_employee_current_l
 
 
 
-<?php if (!$this->config->item('disable_reserve_notifications')) { ?>
+<?php if (!$this->config->item('disable_sale_notifications')) { ?>
 	<script type="text/javascript">
 		<?php
 		if(isset($error))
@@ -833,7 +833,7 @@ $(document).keydown(function(event)
 		$("#ajax-loader").hide();
 
 		<?php if (!$this->agent->is_mobile()) { ?>
-			<?php if (!$this->config->item('auto_focus_on_room_after_reserve_and_receiving'))
+			<?php if (!$this->config->item('auto_focus_on_item_after_sale_and_receiving'))
 			{
 			?>
 				if (last_focused_id && last_focused_id != 'item' && $('#'+last_focused_id).is('input[type=text]'))
@@ -862,7 +862,7 @@ $(document).keydown(function(event)
 			$(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
 		});
 
-		$( "#item" ).autocomplete({
+		$( "#room" ).autocomplete({
 			source: '<?php echo site_url("reserve/room_search"); ?>',
 			delay: 300,
 			autoFocus: false,
@@ -870,7 +870,7 @@ $(document).keydown(function(event)
 			select: function(event, ui)
 			{
 				event.preventDefault();
-				$( "#item" ).val(ui.item.value);
+				$( "#room" ).val(ui.item.value);
 				$('#add_room_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit, success: itemScannedSuccess});
 			}
 		});
@@ -981,7 +981,7 @@ $(document).keydown(function(event)
 				}
 			<?php } ?>
 
-			<?php if (!$this->config->item('disable_confirmation_reserve')) { ?>
+			<?php if (!$this->config->item('disable_confirmation_sale')) { ?>
 				if (confirm(<?php echo json_encode(lang("reserve_confirm_finish_reserve")); ?>))
 				{
 					<?php } ?>
@@ -998,7 +998,7 @@ $(document).keydown(function(event)
 						$('#finish_reserve_form').submit();
 					}
 
-					<?php if (!$this->config->item('disable_confirmation_reserve')) { ?>
+					<?php if (!$this->config->item('disable_confirmation_sale')) { ?>
 					}
 					else
 					{
@@ -1021,7 +1021,7 @@ $(document).keydown(function(event)
 			if (confirm(<?php echo json_encode(lang("reserve_confirm_suspend_reserve")); ?>))
 			{
 				$.post('<?php echo site_url("reserve/set_comment");?>', {comment: $('#comment').val()}, function() {
-					<?php if ($this->config->item('show_receipt_after_suspending_reserve')) { ?>
+					<?php if ($this->config->item('show_receipt_after_suspending_sale')) { ?>
 						window.location = '<?php echo site_url("reserve/suspend"); ?>';
 						<?php }else { ?>
 							$("#register_container").load('<?php echo site_url("reserve/suspend"); ?>');
@@ -1035,7 +1035,7 @@ $(document).keydown(function(event)
 			if (confirm(<?php echo json_encode(lang("reserve_confirm_suspend_reserve")); ?>))
 			{
 				$.post('<?php echo site_url("reserve/set_comment");?>', {comment: $('#comment').val()}, function() {
-					<?php if ($this->config->item('show_receipt_after_suspending_reserve')) { ?>
+					<?php if ($this->config->item('show_receipt_after_suspending_sale')) { ?>
 						window.location = '<?php echo site_url("reserve/suspend/2"); ?>';
 					<?php }else { ?>
 						$("#register_container").load('<?php echo site_url("reserve/suspend/2"); ?>');
@@ -1062,7 +1062,7 @@ $(document).keydown(function(event)
 		$('#mode').change(function()
 		{
 			if ($(this).val() == "store_account_payment") { // Hiding the category grid
-				$('#show_hide_grid_wrapper, #category_room_selection_wrapper').fadeOut();
+				$('#show_hide_grid_wrapper, #category_item_selection_wrapper').fadeOut();
 			}else { // otherwise, show the categories grid
 				$('#show_hide_grid_wrapper, #show_grid').fadeIn();
 				$('#hide_grid').fadeOut();

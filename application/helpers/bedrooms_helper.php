@@ -44,9 +44,15 @@ function get_bedrooms_barcode_data($room_ids)
 	  }
 	  else
 	  {
-
-				$result[] = array('name' => ($is_room_location_promo || $is_room_promo ? '<span style="text-decoration: line-through;">'.to_currency($regular_room_price).'</span> ' : ' ').to_currency($room_price).'<br>'.$room_info->name, 'id'=> number_pad($room_id, 10));
+		if ($room_info->tax_included)
+		{
+		    $result[] = array('name' =>($is_room_location_promo || $is_room_promo ? '<span style="text-decoration: line-through;">'.to_currency(get_price_for_room_excluding_taxes($room_id, $regular_room_price)).'</span> ' : ' ').to_currency(get_price_for_room_excluding_taxes($room_id, $room_price)).': '.$room_info->name, 'id'=> number_pad($room_id, 10));
 		}
+		else
+		{
+			$result[] = array('name' => ($is_room_location_promo || $is_room_promo ? '<span style="text-decoration: line-through;">'.to_currency($regular_room_price).'</span> ' : ' ').to_currency($room_price).'<br>'.$room_info->name, 'id'=> number_pad($room_id, 10));
+	  	}
+	  }
 	}
 	return $result;
 }

@@ -22,7 +22,7 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 			<div id="customer"><?php echo lang('customers_customer').": ".$customer; ?></div>
 			<?php if(!empty($customer_address_1)){ ?><div><?php echo lang('common_address'); ?> : <?php echo $customer_address_1. ' '.$customer_address_2; ?></div><?php } ?>
 			<?php if (!empty($customer_city)) { echo $customer_city.' '.$customer_state.', '.$customer_zip;} ?>
-			<?php if (!empty($customer_country)) { echo '<div>'.$customer_country.'</div>';} ?>
+			<?php if (!empty($customer_country)) { echo '<div>'.$customer_country.'</div>';} ?>			
 			<?php if(!empty($customer_phone)){ ?><div><?php echo lang('common_phone_number'); ?> : <?php echo $customer_phone; ?></div><?php } ?>
 			<?php if(!empty($customer_email)){ ?><div><?php echo lang('common_email'); ?> : <?php echo $customer_email; ?></div><?php } ?>
 		<?php
@@ -32,29 +32,29 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 		<?php if (isset($reservation_type)) { ?>
 			<div id="reservation_type"><?php echo $reservation_type; ?></div>
 		<?php } ?>
-
+		
 		<?php
 		if ($register_name)
 		{
 		?>
-			<div id="sale_register_used"><?php echo lang('locations_register_name').': '.$register_name; ?></div>
+			<div id="sale_register_used"><?php echo lang('locations_register_name').': '.$register_name; ?></div>		
 		<?php
 		}
 		?>
 
 
-		<div id="date"><?php echo lang('reserve_date_from_to').": ".$reservation_from." - ".$reservation_to; ?></div>
-
-
-
+		<!-- <div id="date"><?php echo lang('reserve_date_from_to').": ".$reservation_from." - ".$reservation_to; ?></div> -->
+		
+		
+		
 		<div id="employee"><?php echo lang('employees_employee').": ".$employee; ?></div>
-		<?php
+		<?php 
 		if($this->Location->get_info_for_key('enable_credit_card_processing'))
 		{
 			echo '<div id="merchant_id">'.lang('config_merchant_id').': '.$this->Location->get_info_for_key('merchant_id').'</div>';
 		}
 		?>
-
+		
 	</div>
 	<?php
 	foreach(array_reverse($cart, true) as $line=>$room)
@@ -71,7 +71,7 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 	<th style="width:33%;text-align:center;"><?php echo lang('bedrooms_room'); ?></th>
 	<th style="width:20%;text-align:center;"><?php echo lang('common_price'); ?></th>
 	<th style="width:15%;text-align:center;"><?php echo lang('reserve_quantity'); ?></th>
-	<?php if($discount_exists)
+	<?php if($discount_exists) 
     {
 	?>
 	<th style="width:16%;text-align:center;"><?php echo lang('reserve_discount'); ?></th>
@@ -88,7 +88,7 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 		<td style="text-align:center;"><span class='long_name'><?php echo $room['name']; ?><?php if ($room['beds']){ ?> (<?php echo lang('bedrooms_beds')." ".$room['beds']; ?>)<?php } ?></span></td>
 		<td style="text-align:center;"><?php echo to_currency($room['price']); ?></td>
 		<td style='text-align:center;'><?php echo $room['quantity']; ?></td>
-		<?php if($discount_exists)
+		<?php if($discount_exists) 
 		{
 		?>
 		<td style='text-align:center;'><?php echo $room['discount']; ?></td>
@@ -128,17 +128,17 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 
     <?php
 		foreach($payments as $payment_id=>$payment)
-		{
+		{ 
 		?>
 			<tr>
 			<td colspan="2" style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php echo (isset($show_payment_times) && $show_payment_times) ?  date(get_date_format().' '.get_time_format(), strtotime($payment['payment_date'])) : lang('reserve_payment'); ?></td>
-
+			
 			<?php if ($is_integrated_credit_reserve || reserve_has_partial_credit_card_payment()) { ?>
-				<td style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> </td>
-				<td style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php echo $payment['card_issuer']. ' '.$payment['truncated_card']; ?></td>
-
+				<td style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> </td>											 
+				<td style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php echo $payment['card_issuer']. ' '.$payment['truncated_card']; ?></td>											 
+				
 			<?php } else { ?>
-				<td colspan="2" style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> </td>
+				<td colspan="2" style="<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>"><?php $splitpayment=explode(':',$payment['payment_type']); echo $splitpayment[0]; ?> </td>											 
 			<?php
 			}
 			?>
@@ -159,7 +159,7 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 	</tr>
 		<?php }?>
 	<?php }?>
-
+	
 	<?php if ($amount_change >= 0) {?>
 	<tr>
 		<td colspan="4" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo lang('reserve_change_due'); ?></td>
@@ -173,11 +173,11 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 	<tr>
 		<td colspan="4" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo lang('reserve_amount_due'); ?></td>
 		<td colspan="2" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo to_currency($amount_change * -1); ?></td>
-	</tr>
+	</tr>	
 	<?php
-	}
+	} 
 	?>
-
+	
 	<?php if (isset($customer_balance_for_sale) && $customer_balance_for_sale !== FALSE) {?>
 	<tr>
 		<td colspan="4" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo lang('reserve_customer_account_balance'); ?></td>
@@ -187,7 +187,7 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 	<?php
 	}
 	?>
-
+	
 	<?php
 	if (isset($ref_no) && $ref_no)
 	{
@@ -195,11 +195,11 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 	<tr>
 		<td colspan="4" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo lang('reserve_ref_no'); ?></td>
 		<td colspan="2" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo $ref_no; ?></td>
-	</tr>
+	</tr>	
 	<?php
 	}
 	?>
-
+	
 	<?php
 	if (isset($auth_code) && $auth_code)
 	{
@@ -207,14 +207,14 @@ $is_integrated_credit_reserve = is_reserve_integrated_cc_processing();
 	<tr>
 		<td colspan="4" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo lang('reserve_auth_code'); ?></td>
 		<td colspan="2" style='<?php echo is_rtl_lang()? 'text-align: left;':'text-align: right;'?>'><?php echo $auth_code; ?></td>
-	</tr>
+	</tr>	
 	<?php
 	}
 	?>
-
+	
 	</table>
 	<div style="margin: 20px auto;<?php echo is_rtl_lang()? 'text-align: right;':'text-align: left;'?>">
-	    <?php if(isset($show_comment_on_receipt) && $show_comment_on_receipt == 1){?>
+	    <?php if(isset($show_comment_on_receipt) && $show_comment_on_receipt == 1){?>		
 			<?php echo lang('common_comments').": ". $comment;?>
 	    <?php } ?>
 	</div>
