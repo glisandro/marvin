@@ -32,11 +32,11 @@
 	<div class="row" id="form">
 		<div class="col-md-12">
 			<?php echo lang('common_fields_required_message'); ?>
-			
+
 			<div class="widget-box">
 				<div class="widget-title">
 					<span class="icon">
-						<i class="fa fa-align-justify"></i>									
+						<i class="fa fa-align-justify"></i>
 					</span>
 					<h5><?php echo lang("bedrooms_basic_information"); ?></h5>
 				</div>
@@ -107,7 +107,7 @@
 						</div>
 					</div>
 
-					
+
 					<div class="form-group">
 					<?php echo form_label(lang('bedrooms_is_service').':', 'is_service',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 						<div class="col-sm-9 col-md-9 col-lg-10">
@@ -120,8 +120,8 @@
 						);?>
 						</div>
 					</div>
-					
-					
+
+
 				</div>
 				<div class="form-group">
                 <div class="col-sm-3 col-md-3 col-lg-2 control-label wide">&nbsp;</div>
@@ -134,9 +134,9 @@
                                 'name'=>'image_id',
                                 'id'=>'image_id',
                                 'value'=>$room_info->image_id)
-                              );?>   
-                          </div>  
-                </div> 
+                              );?>
+                          </div>
+                </div>
 				</div>
 				<?php if($room_info->image_id) {  ?>
 				<div class="form-group">
@@ -152,12 +152,12 @@
 				</div>
 				<?php } ?>
 
-			</div>	
+			</div>
 
 
 			<div class="widget-title widget-title1 pricing-widget">
 				<span class="icon">
-					<i class="fa fa-align-justify"></i>									
+					<i class="fa fa-align-justify"></i>
 				</span>
 				<h5><?php echo lang("bedrooms_pricing_and_inventory"); ?></h5>
 			</div>
@@ -174,7 +174,7 @@
 									);?>
 								</div>
 						</div>
-					<?php 
+					<?php
 					}
 					else
 					{
@@ -195,7 +195,7 @@
 					</div>
 				</div>
 
-				
+
 				<div class="form-group">
 				<?php echo form_label(lang('bedrooms_promo_price').':', 'promo_price',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 				    <div class="col-sm-9 col-md-9 col-lg-10">
@@ -213,8 +213,8 @@
 					<div class="form-group offset1">
 					<?php echo form_label(lang('bedrooms_promo_start_date').':', 'start_date',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label text-info wide')); ?>
 					<div class="col-sm-9 col-md-9 col-lg-10">
-					   
-			
+
+
 				    <div class="input-group date datepicker" data-date="<?php echo $room_info->start_date ? date(get_date_format(), strtotime($room_info->start_date)) : ''; ?>" data-date-format=<?php echo json_encode(get_js_date_format()); ?>>
   					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					<?php echo form_input(array(
@@ -231,8 +231,8 @@
 					<div class="form-group offset1">
 					<?php echo form_label(lang('bedrooms_promo_end_date').':', 'end_date',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label text-info wide')); ?>
 					<div class="col-sm-9 col-md-9 col-lg-10">
-					   
-			
+
+
 				    <div class="input-group date datepicker" data-date="<?php echo $room_info->end_date ? date(get_date_format(), strtotime($room_info->end_date)) : ''; ?>" data-date-format=<?php echo json_encode(get_js_date_format()); ?>>
   					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					<?php echo form_input(array(
@@ -247,7 +247,7 @@
 
 				<div class="form-group override-commission-container">
 					<?php echo form_label(lang('common_override_default_commission').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
-					
+
 					<div class="col-sm-9 col-md-9 col-lg-10">
 						<?php echo form_checkbox(array(
 							'name'=>'override_default_commission',
@@ -265,7 +265,7 @@
 						<?php echo form_input(array(
 							'name'=>'commission_value',
 							'size'=>'8',
-							'class'=>'form-control margin10 form-inps', 
+							'class'=>'form-control margin10 form-inps',
 							'value'=> $room_info->commission_fixed > 0 ? to_quantity($room_info->commission_fixed, FALSE) : to_quantity($room_info->commission_percent, FALSE))
 						);?>
 
@@ -274,10 +274,10 @@
 					</div>
 
 				</div>
-				
+
 				<div class="form-group override-taxes-container">
 					<?php echo form_label(lang('bedrooms_override_default_tax').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
-					
+
 					<div class="col-sm-9 col-md-9 col-lg-10">
 						<?php echo form_checkbox(array(
 							'name'=>'override_default_tax',
@@ -287,7 +287,7 @@
 						?>
 					</div>
 				</div>
-				<div class="tax-container <?php if (!$room_info->override_default_tax){echo 'hidden';} ?>">	
+				<div class="tax-container <?php if (!$room_info->override_default_tax){echo 'hidden';} ?>">
 					<div class="form-group">
 					<?php echo form_label(lang('bedrooms_tax_1').':', 'tax_percent_1',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 						<div class="col-sm-9 col-md-9 col-lg-10">
@@ -346,7 +346,7 @@
 					    </span>
 						</div>
 					</div>
-                     
+
 					<div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 col-lg-9 col-lg-offset-3"  style="visibility: <?php echo isset($room_tax_info[2]['name']) ? 'hidden' : 'visible';?>">
 						<a href="javascript:void(0);" class="show_more_taxes"><?php echo lang('common_show_more');?> &raquo;</a>
 					</div>
@@ -397,7 +397,7 @@
 								'name'=>'tax_percents[]',
 								'id'=>'tax_percent_name_4',
 								'size'=>'3',
-								'class'=>'form-control form-inps-tax', 
+								'class'=>'form-control form-inps-tax',
 								'placeholder' => lang('bedrooms_tax_percent'),
 								'value'=> isset($room_tax_info[3]['percent']) ? $room_tax_info[3]['percent'] : '')
 							);?>
@@ -406,7 +406,7 @@
 							<?php echo form_hidden('tax_cumulatives[]', '0'); ?>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 						<?php echo form_label(lang('bedrooms_tax_5').':', 'tax_percent_5',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 							<div class="col-sm-9 col-md-9 col-lg-10">
@@ -440,7 +440,7 @@
 				<?php foreach($locations as $location) { ?>
 					<div class="widget-title widget-title1">
 						<span class="icon">
-							<i class="fa fa-align-justify"></i>									
+							<i class="fa fa-align-justify"></i>
 						</span>
 						<h5><?php echo $location->name; ?></h5>
 					</div>
@@ -454,8 +454,8 @@
 								'class'=>'form-control form-inps',
 						));?>
 						</div>
-					</div>		
-					
+					</div>
+
 					<?php if ($this->Location->count_all() > 1) {?>
 						<div class="form-group reorder-input <?php if ($room_info->is_service){echo 'hidden';} ?>">
 						<?php echo form_label(lang('bedrooms_reorder_level').':', '', array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
@@ -478,7 +478,7 @@
 						));?>
 						</div>
 					</div>
-					
+
 					<?php if ($this->Location->count_all() > 1) {?>
 							<div class="form-group override-prices-container">
 							<?php echo form_label(lang('bedrooms_override_prices').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
@@ -491,7 +491,7 @@
 								?>
 							</div>
 						</div>
-						<div class="room-location-price-container <?php if ($location_bedrooms[$location->location_id] === FALSE || !$location_bedrooms[$location->location_id]->is_overwritten){echo 'hidden';} ?>">	
+						<div class="room-location-price-container <?php if ($location_bedrooms[$location->location_id] === FALSE || !$location_bedrooms[$location->location_id]->is_overwritten){echo 'hidden';} ?>">
 							<?php if ($this->Employee->has_module_action_permission('bedrooms','see_cost_price', $this->Employee->get_logged_in_employee_info()->person_id) or $room_info->name=="") { ?>
 									<div class="form-group">
 										<?php echo form_label(lang('bedrooms_cost_price').' ('.lang('bedrooms_without_tax').'):', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
@@ -505,7 +505,7 @@
 												);?>
 										</div>
 									</div>
-								<?php 
+								<?php
 								}
 								else
 								{
@@ -526,7 +526,7 @@
 								</div>
 							</div>
 
-							
+
 
 							<div class="form-group">
 							<?php echo form_label(lang('bedrooms_promo_price').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
@@ -544,7 +544,7 @@
 								<div class="form-group offset1">
 								<?php echo form_label(lang('bedrooms_promo_start_date').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label text-info wide')); ?>
 								<div class="col-sm-9 col-md-9 col-lg-10">
-						
+
 								<div class="input-group date datepicker" data-date="<?php echo $location_bedrooms[$location->location_id]->room_id !== '' &&  $location_bedrooms[$location->location_id]->start_date ? date(get_date_format(), strtotime($location_bedrooms[$location->location_id]->start_date)): ''; ?>" data-date-format=<?php echo json_encode(get_js_date_format()); ?>>
 		  							<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 
@@ -554,7 +554,7 @@
 								'class'=>'form-control form-inps',
 									 'value'=> $location_bedrooms[$location->location_id]->room_id !== '' && $location_bedrooms[$location->location_id]->start_date ? date(get_date_format(), strtotime($location_bedrooms[$location->location_id]->start_date)): ''
 									)
-								);?>       
+								);?>
 							    </div>
 							</div>
 							</div>
@@ -570,7 +570,7 @@
 								'class'=>'form-control form-inps',
 												 'value'=> $location_bedrooms[$location->location_id]->room_id !== '' && $location_bedrooms[$location->location_id]->end_date ? date(get_date_format(), strtotime($location_bedrooms[$location->location_id]->end_date)): ''
 										    	));
-											?> 
+											?>
 								    </div>
 								</div>
 							</div>
@@ -589,7 +589,7 @@
 							</div>
 						</div>
 
-						<div class="tax-container <?php if ($location_bedrooms[$location->location_id] === FALSE || !$location_bedrooms[$location->location_id]->override_default_tax){echo 'hidden';} ?>">	
+						<div class="tax-container <?php if ($location_bedrooms[$location->location_id] === FALSE || !$location_bedrooms[$location->location_id]->override_default_tax){echo 'hidden';} ?>">
 							<div class="form-group">
 							<?php echo form_label(lang('bedrooms_tax_1').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 								<div class="col-sm-9 col-md-9 col-lg-10">
@@ -645,11 +645,11 @@
 						    </span>
 							</div> <!-- end col-sm-9...-->
 						</div><!--End form-group-->
-						
+
 						<div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 col-lg-9 col-lg-offset-3" style="visibility: <?php echo isset($location_taxes[$location->location_id][2]['name']) ? 'hidden' : 'visible';?>">
 							<a href="javascript:void(0);" class="show_more_taxes"><?php echo lang('common_show_more');?> &raquo;</a>
 						</div>
-						
+
 						<div class="more_taxes_container"  style="display: <?php echo isset($location_taxes[$location->location_id][2]['name']) ? 'block' : 'none';?>">
 							<div class="form-group">
 							<?php echo form_label(lang('bedrooms_tax_3').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
@@ -676,8 +676,8 @@
 								<?php echo form_hidden('locations['.$location->location_id.'][tax_cumulatives][]', '0'); ?>
 								</div>
 							</div>
-							
-							
+
+
 							<div class="form-group">
 							<?php echo form_label(lang('bedrooms_tax_4').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 								<div class="col-sm-9 col-md-9 col-lg-10">
@@ -703,9 +703,9 @@
 								<?php echo form_hidden('locations['.$location->location_id.'][tax_cumulatives][]', '0'); ?>
 								</div>
 							</div>
-							
-							
-							
+
+
+
 							<div class="form-group">
 							<?php echo form_label(lang('bedrooms_tax_5').':', '',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label wide')); ?>
 								<div class="col-sm-9 col-md-9 col-lg-10">
@@ -735,11 +735,11 @@
                         <div class="clear"></div>
 					</div> <!-- End tax-container-->
 				<?php } /*End if for multi locations*/ ?>
-			<?php } /*End foreach for locations*/ ?>	
-			
+			<?php } /*End foreach for locations*/ ?>
+
 				<?php echo form_hidden('redirect', isset($redirect) ? $redirect : ''); ?>
 				<?php echo form_hidden('sale_or_receiving', isset($sale_or_receiving) ? $sale_or_receiving : ''); ?>
-				
+
 					<div class="form-actions">
 						<?php
 						if (isset($redirect) && $redirect == 1)
@@ -751,10 +751,10 @@
 						    'value' => 'true',
 						    'content' => lang('common_cancel')
 							));
-						
+
 						}
 						?>
-						
+
 				<?php
 				echo form_submit(array(
 					'name'=>'submitf',
@@ -765,7 +765,7 @@
 				?>
 				</div>
 			<?php echo form_close(); ?>
-			
+
 			<div class="item_navigation">
 				<?php
 				if (isset($prev_room_id) && $prev_room_id)
@@ -785,48 +785,48 @@
 				}
 				?>
 			</div>
-			
+
 			</div>
 		</div>
 	</div>
 </div>
-		
+
 
 <script type='text/javascript'>
 //validation and submit handling
 $(document).ready(function()
 {
-	
+
 	$(".delete_room_number").click(function()
 	{
 		$(this).parent().parent().remove();
 	});
-	
+
 	$("#add_addtional_room_number").click(function()
 	{
 		$("#additional_room_numbers tbody").append('<tr><td><input type="text" class="form-control form-inps" size="40" name="additional_room_numbers[]" value="" /></td><td>&nbsp;</td></tr>');
 	});
-	
+
 	$("#cancel").click(cancelRoomAddingFromSaleOrRecv);
-	
+
     setTimeout(function(){$(":input:visible:first","#room_form").focus();},100);
     $('#image_id').imagePreview({ selector : '#avatar' }); // Custom preview container
-	
+
 	$('.datepicker').datepicker({
 		format: <?php echo json_encode(get_js_date_format()); ?>
 	});
-   	
+
 	$(".override_default_tax_checkbox, .override_prices_checkbox, .override_default_commission").change(function()
 	{
 		$(this).parent().parent().next().toggleClass('hidden')
 	});
-	
+
 	$("#is_service").change(function()
 	{
 		if ($(this).prop('checked'))
 		{
-			$(".quantity-input").addClass('hidden');			
-			$(".reorder-input").addClass('hidden');			
+			$(".quantity-input").addClass('hidden');
+			$(".reorder-input").addClass('hidden');
 		}
 		else
 		{
@@ -849,12 +849,12 @@ $(document).ready(function()
 			<?php if(!$room_info->room_id) {  ?>
 			if(data.duplicate)
 				{
-					
+
 					if(confirm(<?php echo json_encode(lang('bedrooms_duplicate_exists'));?>))
 					{
 						doRoomSubmit(form);
 					}
-					else 
+					else
 					{
 						return false;
 					}
@@ -879,17 +879,17 @@ $(document).ready(function()
 		<?php if(!$room_info->room_id) {  ?>
 			room_number:
 			{
-				remote: 
-				    { 
-					url: "<?php echo site_url('bedrooms/room_number_exists');?>", 
+				remote:
+				    {
+					url: "<?php echo site_url('bedrooms/room_number_exists');?>",
 					type: "post"
-					
-				    } 
+
+				    }
 			},
-			
+
 		<?php } ?>
-		
-		
+
+
 		<?php foreach($locations as $location) { ?>
 			"<?php echo 'locations['.$location->location_id.'][quantity]'; ?>":
 			{
@@ -906,14 +906,14 @@ $(document).ready(function()
 			"<?php echo 'locations['.$location->location_id.'][unit_price]'; ?>":
 			{
 				number: true
-			},			
+			},
 			"<?php echo 'locations['.$location->location_id.'][promo_price]'; ?>":
 			{
 				number: true
-			},			
-			
+			},
+
 		<?php } ?>
-		
+
 			name:"required",
 			category:"required",
 			cost_price:
@@ -937,16 +937,16 @@ $(document).ready(function()
 			},
    		},
 		messages:
-		{			
+		{
 			<?php if(!$room_info->room_id) {  ?>
 			room_number:
 			{
 				remote: <?php echo json_encode(lang('bedrooms_room_number_exists')); ?>
-				   
+
 			},
 			<?php } ?>
-			
-			
+
+
 			<?php foreach($locations as $location) { ?>
 				"<?php echo 'locations['.$location->location_id.'][quantity]'; ?>":
 				{
@@ -963,14 +963,14 @@ $(document).ready(function()
 				"<?php echo 'locations['.$location->location_id.'][unit_price]'; ?>":
 				{
 					number: <?php echo json_encode(lang('common_this_field_must_be_a_number')); ?>
-				},			
+				},
 				"<?php echo 'locations['.$location->location_id.'][promo_price]'; ?>":
 				{
 					number: <?php echo json_encode(lang('common_this_field_must_be_a_number')); ?>
-				},			
-				
+				},
+
 			<?php } ?>
-			
+
 			name:<?php echo json_encode(lang('bedrooms_name_required')); ?>,
 			category:<?php echo json_encode(lang('bedrooms_category_required')); ?>,
 			cost_price:
@@ -1006,19 +1006,19 @@ function doRoomSubmit(form)
 		gritter(response.success ? <?php echo json_encode(lang('common_success')); ?> +' #' + response.room_id : <?php echo json_encode(lang('common_error')); ?> ,response.message,response.success ? 'gritter-room-success' : 'gritter-room-error',false,false);
 
 		if(response.redirect==1 && response.success)
-		{ 
-			if (response.sale_or_receiving == 'sale')
+		{
+			if (response.sale_or_receiving == 'reserve')
 			{
-				$.post('<?php echo site_url("sales/add");?>', {room: response.room_id}, function()
+				$.post('<?php echo site_url("reserve/add");?>', {room: response.room_id}, function()
 				{
-					window.location.href = '<?php echo site_url('sales'); ?>'
+					window.location.href = '<?php echo site_url('reserve'); ?>'
 				});
 			}
 			else
 			{
-				$.post('<?php echo site_url("receivings/add");?>', {room: response.room_id}, function()
+				$.post('<?php echo site_url("reserve/add");?>', {room: response.room_id}, function()
 				{
-					window.location.href = '<?php echo site_url('receivings'); ?>'
+					window.location.href = '<?php echo site_url('reserve'); ?>'
 				});
 			}
 		}
@@ -1027,17 +1027,17 @@ function doRoomSubmit(form)
 			window.location.href = '<?php echo site_url('bedrooms'); ?>'
 		}
 
-		
+
 		<?php if(!$room_info->room_id) { ?>
 		//If we have a new item, make sure we hide the tax containers to "reset"
 		$(".tax-container").addClass('hidden');
 		$(".room-location-price-container").addClass('hidden');
 		$('.commission-container').addClass('hidden');
-		
+
 		//Make the quantity inputs show up again in case they were hidden
 		$(".quantity-input").removeClass('hidden');
 		$(".reorder-input").removeClass('hidden');
-		
+
 		<?php } ?>
 	},
 	<?php if(!$room_info->room_id) { ?>
@@ -1051,10 +1051,10 @@ function cancelRoomAddingFromSaleOrRecv()
 {
 	if (confirm(<?php echo json_encode(lang('bedrooms_are_you_sure_cancel')); ?>))
 	{
-		<?php if (isset($sale_or_receiving) && $sale_or_receiving == 'sale') {?>
-			window.location = <?php echo json_encode(site_url('sales')); ?>;
+		<?php if (isset($sale_or_receiving) && $sale_or_receiving == 'reserve') {?>
+			window.location = <?php echo json_encode(site_url('reserve')); ?>;
 		<?php } else { ?>
-			window.location = <?php echo json_encode(site_url('receivings')); ?>;
+			window.location = <?php echo json_encode(site_url('reserve')); ?>;
 		<?php } ?>
 	}
 }

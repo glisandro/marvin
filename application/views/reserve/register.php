@@ -1,57 +1,47 @@
-<div id="content-header" class="hidden-print sales_header_container">
+<div id="content-header" class="hidden-print reserve_header_container">
 	<h1 class="headigs"> <i class="icon fa fa-shopping-cart"></i>
 		<?php echo lang('reserve_register'); ?> <span id="ajax-loader"><?php echo img(array('src' => base_url().'/img/ajax-loader.gif')); ?></span>
-		<?php if($this->reserve_lib->get_change_reserve_id()) { ?>
+		<?php if($this->reserve_lib->get_change_reservation_id()) { ?>
 		<small>
-			<?php echo lang('reserve_editing_sale'); ?> <b> <?php echo $this->config->item('sale_prefix').' '.$this->reserve_lib->get_change_reserve_id(); ?> </b> 
+			<?php echo lang('reserve_editing_reserve'); ?> <b> ss<?php echo $this->config->item('reserve_prefix').' '.$this->reserve_lib->get_change_reservation_id(); ?> </b>
 		</small>
 		<?php } ?>
 	</h1>
-	
-    
-    
+
+
+
 </div>
 
 <div class="clear"></div>
 	<!--Left small box-->
 	<div class="row">
-		<div class="sale_register_leftbox col-md-9">
+		<div class="reserve_register_leftbox col-md-9">
 			<div class="row forms-area">
 				<?php if ($mode != 'store_account_payment') { ?>
-						<div class="col-md-8 no-padd">
+						<div class="col-md-12 no-padd">
 							<div class="input-append">
-								<?php echo form_open("sales/add",array('id'=>'add_item_form','class'=>'form-inline', 'autocomplete'=> 'off')); ?>
-								
-								<?php echo form_input(array('name'=>'item','id'=>'item','class'=>'input-xlarge', 'accesskey' => 'k', 'placeholder' => lang('reserve_start_typing_item_name')));
+								<?php echo form_open("reserve/add",array('id'=>'add_room_form','class'=>'form-inline', 'autocomplete'=> 'off')); ?>
+
+								<?php echo form_input(array('name'=>'item','id'=>'item','class'=>'input-xlarge', 'accesskey' => 'k', 'placeholder' => lang('reserve_start_typing_room_name')));
 								?>
-								
-								<?php echo anchor("items/view/-1/1/sale",
-									lang('reserve_new_item'),
-									array('class'=>'btn btn-primary none new_item_btn','title'=>lang('reserve_new_item')));
+
+								<?php echo anchor("bedrooms/view/-1/1/reserve",
+									lang('reserve_new_room'),
+									array('class'=>'btn btn-primary none new_room_btn','title'=>lang('reserve_new_room')));
 								?>
-									
-								<?php echo anchor("sales/suspended/",
-									"<div class='small_button'>".lang('reserve_suspended_reserve')."</div>",
-									array('class'=>'btn btn-primary none suspended_sales_btn','title'=>lang('reserve_suspended_reserve')));
-								?>									
+
 								</form>
 							</div>
-						</div>					
+						</div>
 					<?php } ?>
-							
-				<div class="col-md-4 no-padd">
-					<?php echo form_open("sales/change_mode",array('id'=>'mode_form', 'autocomplete'=> 'off')); ?>
-						<label ><?php echo lang('reserve_mode') ?>
-							<?php echo form_dropdown('mode',$modes,$mode,'id="mode" class=""'); ?>
-						</label>
-					</form>					
+
+
+
 			</div>
-	
-			</div>
-		
+
 		<div class="row">
-			
-			<?php if ($mode != 'store_account_payment') 
+
+			<?php if ($mode != 'store_account_payment')
 			{ ?>
 			<div class="table-responsive">
 				<table id="register" class="table table-bordered">
@@ -59,35 +49,31 @@
 					<thead>
 						<tr>
 							<th ></th>
-							<th class="item_name_heading" ><?php echo lang('reserve_item_name'); ?></th>
-							<th class="sales_item sales_items_number">
-								
-								<?php 
+							<th class="room_name_heading" ><?php echo lang('reserve_room_name'); ?></th>
+							<th class="reserve_room reserve_bedrooms_number">
+
+								<?php
 								switch($this->config->item('id_to_show_on_reserve_interface'))
 								{
 									case 'number':
-									echo lang('reserve_item_number'); 
+									echo lang('reserve_room_number') . $this->config->item('id_to_show_on_reserve_interface');
 									break;
-									
-									case 'product_id':
-									echo lang('items_product_id'); 
-									break;
-									
+
 									case 'id':
-									echo lang('items_item_id'); 
+									echo lang('reserve_room_id') . $this->config->item('id_to_show_on_reserve_interface');
 									break;
-									
+
 									default:
-									echo lang('reserve_item_number'); 
+									echo lang('reserve_room_number') . $this->config->item('id_to_show_on_reserve_interface');
 									break;
 								}
 								?>
-							
+
 							</th>
-							<th class="sales_stock"><?php echo lang('reserve_stock'); ?></th>
-							<th class="sales_price"><?php echo lang('reserve_price'); ?></th>
-							<th class="sales_quality"><?php echo lang('reserve_quantity'); ?></th>
-							<th class="sales_discount"><?php echo lang('reserve_discount'); ?></th>
+							<th class="reserve_stock"><?php echo lang('reserve_stock'); ?></th>
+							<th class="reserve_price"><?php echo lang('reserve_price'); ?></th>
+							<th class="reserve_quality"><?php echo lang('reserve_quantity'); ?></th>
+							<th class="reserve_discount"><?php echo lang('reserve_discount'); ?></th>
 							<th ><?php echo lang('reserve_total'); ?></th>
 						</tr>
 					</thead>
@@ -95,115 +81,111 @@
 						<?php if(count($cart)==0)	{ ?>
 						<tr class="cart_content_area">
 							<td colspan='8'>
-								<div class='text-center text-warning' > <h3><?php echo lang('reserve_no_items_in_cart'); ?></h3></div>
+								<div class='text-center text-warning' > <h3><?php echo lang('reserve_no_bedrooms_in_cart'); ?></h3></div>
 							</td>
 						</tr>
-						<?php 
+						<?php
 						}
 						else
 						{
-							foreach(array_reverse($cart, true) as $line=>$item)	
+							foreach(array_reverse($cart, true) as $line=>$item)
 							{
-								$cur_item_location_info = isset($item['item_id']) ? $this->Item_location->get_info($item['item_id']) : $this->Item_kit_location->get_info($item['item_kit_id']);
+								$cur_room_location_info = isset($item['room_id']) ? $this->Item_location->get_info($item['room_id']) : $this->Item_kit_location->get_info($item['item_kit_id']);
 								?>
-								<tr id="reg_item_top" bgcolor="#eeeeee" >
-									<td><?php echo anchor("sales/delete_item/$line",'<i class="fa fa-trash-o fa fa-2x text-error"></i>', array('class' => 'delete_item'));?></td>
-									<td class="text text-success"><a href="<?php echo isset($item['item_id']) ? site_url('home/view_item_modal/'.$item['item_id']) : site_url('home/view_item_kit_modal/'.$item['item_kit_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($item['name']); ?><?php echo $item['size'] ? ' ('.H($item['size']).')': ''; ?></a></td>
-									<td class="text text-info sales_item" id="reg_item_number">
-										<?php 
+								<tr id="reg_room_top" bgcolor="#eeeeee" >
+									<td><?php echo anchor("reserve/delete_room/$line",'<i class="fa fa-trash-o fa fa-2x text-error"></i>', array('class' => 'delete_room'));?></td>
+									<td class="text text-success"><a href="<?php echo isset($item['room_id']) ? site_url('home/view_room_modal/'.$item['room_id']) : site_url('home/view_room_kit_modal/'.$item['item_kit_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($item['name']); ?></a></td>
+									<td class="text text-info reserve_room" id="reg_room_number">
+										<?php
 										switch($this->config->item('id_to_show_on_reserve_interface'))
 										{
 											case 'number':
-											echo array_key_exists('item_number', $item) ? H($item['item_number']) : H($item['item_kit_number']); 
+											echo H($item['room_number']);
 											break;
-									
-											case 'product_id':
-											echo array_key_exists('product_id', $item) ? H($item['product_id']) : lang('items_none'); 
-											break;
-									
+
 											case 'id':
-											echo array_key_exists('item_id', $item) ? H($item['item_id']) : 'KIT '.H($item['item_kit_id']); 
+											echo H($item['room_id']);
 											break;
-											
+
 											default:
-											echo array_key_exists('item_number', $item) ? H($item['item_number']) : H($item['item_kit_number']); 
+											echo H($item['room_number']);
 											break;
 										}
 										?>
-																			
-									</td>
-									<td class="text text-warning sales_stock" id="reg_item_stock" ><?php echo property_exists($cur_item_location_info, 'quantity') ? to_quantity($cur_item_location_info->quantity) : ''; ?></td>
 
-									<?php if ($this->Employee->has_module_action_permission('sales', 'edit_reserve_price', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
+									</td>
+									<td class="text text-warning reserve_stock" id="reg_room_stock" ><?php echo property_exists($cur_room_location_info, 'quantity') ? to_quantity($cur_room_location_info->quantity) : ''; ?></td>
+
+									<?php if ($this->Employee->has_module_action_permission('reserve', 'edit_reserve_price', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
 									<td>
 										<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	 
-										 
-										
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
+
+
 										echo form_input(array('name'=>'price','value'=>to_currency_no_money($item['price'], 10),'class'=>'input-small', 'id' => 'price_'.$line));?>
-										 
+
 										</form>
-									 
+
 									</td>
-									<?php }else{ 
+									<?php }else{
 									?><td>
 									<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	 
-											
-											echo $item['price']; 
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
+
+											echo $item['price'];
 											echo form_hidden('price',$item['price']); ?>
-										
-										
+
+
 										</form>
-									
+
 									</td>
 									<?php }	?>
 
 									<td>
 										<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	
-											
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
+
 												if(isset($item['is_serialized']) && $item['is_serialized']==1){
 													echo to_quantity($item['quantity']);
 													echo form_hidden('quantity',to_quantity($item['quantity']));
 												}else{
 													echo form_input(array('name'=>'quantity','value'=>to_quantity($item['quantity']),'class'=>'input-small', 'id' => 'quantity_'.$line));
 												}?>
-											 
+
 										</form>
 									</td>
 
-									<?php if ($this->Employee->has_module_action_permission('sales', 'give_discount', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
+									<?php if ($this->Employee->has_module_action_permission('reserve', 'give_discount', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
 									<td>
 										<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 											echo form_input(array('name'=>'discount','value'=>$item['discount'],'class'=>'input-small', 'id' => 'discount_'.$line));?>
 										  </form>
 									</td>
 									<?php }else{ ?>
 									<td>
 										<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	
-											 	
-											echo $item['discount']; 
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
+
+											echo $item['discount'];
 											echo form_hidden('discount',$item['discount']);
 								 ?>
 										</form>
 									</td>
-									 
+
 									<?php }	?>
 
 
 									<td class="text text-main"><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
 								</tr>
 
-								<tr id="reg_item_bottom">
+								<tr id="reg_room_bottom">
 									<td ><?php echo lang('reserve_description_abbrv').':';?></td>
 									<td  colspan="4" class="edit_description">
 										<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	 
-											 
-										
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
+
+
 										if(isset($item['allow_alt_description']) && $item['allow_alt_description']==1){
 											echo form_input(array('name'=>'description','value'=>$item['description'],'size'=>'20', 'id' => 'description_'.$line, 'class' =>'description', 'maxlength' => 255));
 										}else{
@@ -218,18 +200,18 @@
 										</form>
 									</td>
 									<td >
-										
+
 										<?php if(isset($item['is_serialized']) && $item['is_serialized']==1  && $item['name']!=lang('reserve_giftcard')){
 											echo lang('reserve_serial').':';
 										}?>
 									</td>
 									<td colspan="2" class="edit_serialnumber">
 										<?php
-										echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	 
-											 
-											
+										echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
+
+
 										    if(isset($item['is_serialized']) && $item['is_serialized']==1  && $item['name']!=lang('reserve_giftcard'))	{
-												echo form_input(array('name'=>'serialnumber','value'=>$item['serialnumber'], 'class' => 'serial_item','size'=>'20', 'id' => 'serialnumber_'.$line, 'maxlength' => 255));
+												echo form_input(array('name'=>'serialnumber','value'=>$item['serialnumber'], 'class' => 'serial_room','size'=>'20', 'id' => 'serialnumber_'.$line, 'maxlength' => 255));
 											}else{
 												echo form_hidden('serialnumber', '');
 											}?>
@@ -237,118 +219,104 @@
 									</td>
 								</tr>
 
-								
+
 							<?php
 						}
 					}?>
 				</tbody>
 			</table>
 			</div>
-		<?php } 
-		else 
+		<?php }
+		else
 		{ /*Store Account Mode*/ ?>
 			<table id="register"  class="tablesorter table table-bordered ">
 
 				<thead>
 					<tr>
-						<th ><?php echo lang('reserve_item_name'); ?></th>
+						<th ><?php echo lang('reserve_room_name'); ?></th>
 						<th ><?php echo lang('reserve_payment_amount'); ?></th>
 					</tr>
 				</thead>
 				<tbody id="cart_contents">
 					<?php
-					foreach(array_reverse($cart, true) as $line=>$item)	
+					foreach(array_reverse($cart, true) as $line=>$item)
 					{
-						$cur_item_location_info = isset($item['item_id']) ? $this->Item_location->get_info($item['item_id']) : $this->Item_kit_location->get_info($item['item_kit_id']);
+						$cur_room_location_info = isset($item['room_id']) ? $this->Item_location->get_info($item['room_id']) : $this->Item_kit_location->get_info($item['item_kit_id']);
 						?>
-						 							
-						
-						
-					 
 
-						<tr id="reg_item_top" bgcolor="#eeeeee" >
-							<td class="text text-success"><a href="<?php echo site_url('items/view_modal/'.$item['item_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($item['name']); ?></a></td>
+
+
+
+
+						<tr id="reg_room_top" bgcolor="#eeeeee" >
+							<td class="text text-success"><a href="<?php echo site_url('bedrooms/view_modal/'.$item['room_id']) ; ?>" data-toggle="modal" data-target="#myModal" ><?php echo H($item['name']); ?></a></td>
 							<td>
 								<?php
-								echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off')); 	
+								echo form_open("reserve/edit_room/$line", array('class' => 'line_room_form', 'autocomplete'=> 'off'));
 
 									echo form_input(array('name'=>'price','value'=>to_currency_no_money($item['price'], 10),'class'=>'input-small', 'id' => 'price_'.$line));
-									
+
 									echo form_hidden('quantity',to_quantity($item['quantity']));
 									echo form_hidden('description','');
 									echo form_hidden('serialnumber', '');
 								?>
-							
-								</form>		
+
+								</form>
 							</td>
 						</tr>
-						
-						
-				 
+
+
+
 				<?php } /*Foreach*/?>
 			</tbody>
 		</table>
-			
+
 		<?php } ?>
 		<ul class="list-inline pull-left">
 			<?php if ($this->config->item('track_cash')) { ?>
 			<li>
-				<?php echo anchor(site_url('sales/closeregister?continue=home'), lang('reserve_close_register'),array('class'=>'btn btn-primary')); ?>
+				<?php echo anchor(site_url('reserve/closeregister?continue=home'), lang('reserve_close_register'),array('class'=>'btn btn-primary')); ?>
 			</li>
 			<?php } ?>
-			
+
 			<?php
 			if ($this->Register->count_all($this->Employee->get_logged_in_employee_current_location_id()) > 1)
 			{
 			?>
 				<li>
-					<?php echo anchor(site_url('sales/clear_register'), lang('reserve_change_register'),array('class'=>'btn btn-primary')); ?>
+					<?php echo anchor(site_url('reserve/clear_register'), lang('reserve_change_register'),array('class'=>'btn btn-primary')); ?>
 				</li>
-			<?php 
-			} 
+			<?php
+			}
 			?>
 			<li>
-				
+
 			<?php if ($mode != 'store_account_payment') { ?>
-				<?php if ($this->Employee->has_module_action_permission('giftcards', 'add_update', $this->Employee->get_logged_in_employee_info()->person_id)) {?>
-					<li>
-					<?php echo 
-					anchor("sales/new_giftcard",
-						lang('reserve_new_giftcard'),
-						array('class'=>'btn btn-primary ', 
-							'title'=>lang('reserve_new_giftcard')));
-							?>
-						</li>
-				<?php } ?>
-				
+
+
 				<?php
-					if ($this->Employee->has_module_action_permission('reports', 'view_sales_generator', $this->Employee->get_logged_in_employee_info()->person_id))
+					if ($this->Employee->has_module_action_permission('reports', 'view_reserve_generator', $this->Employee->get_logged_in_employee_info()->person_id))
 					{
 					?>
 						<li>
-						<?php echo 
-						anchor("reports/sales_generator",
+						<?php echo
+						anchor("reports/reserve_generator",
 						lang('reserve_search_reports'),
-						array('class'=>'btn btn-primary ', 
+						array('class'=>'btn btn-primary ',
 							'title'=>lang('reserve_search_reports')));
-						?> 
+						?>
 						</li>
 					<?php } ?>
 			<?php } ?>
-				<li>
-				<?php echo anchor("sales/batch_sale/",
-					"<div class='small_button'>".lang('batch_sale')."</div>",
-					array('class'=>'btn btn-primary none suspended_sales_btn hidden-xs','title'=>lang('batch_sale')));
-				?>
-			</li>
-				 
-			</ul>				
-				<?php 
-				if ($this->Employee->has_module_action_permission('sales', 'give_discount', $this->Employee->get_logged_in_employee_info()->person_id) && $mode != 'store_account_payment'){ ?>
+
+
+			</ul>
+				<?php
+				if ($this->Employee->has_module_action_permission('reserve', 'give_discount', $this->Employee->get_logged_in_employee_info()->person_id) && $mode != 'store_account_payment'){ ?>
 					<ul class="list-inline pull-right" id="global_discount">
 						<li>
-							<?php 
-							echo form_open("sales/discount_all", array('id' => 'discount_all_form', 'autocomplete'=> 'off'));
+							<?php
+							echo form_open("reserve/discount_all", array('id' => 'discount_all_form', 'autocomplete'=> 'off'));
 							echo '<label id="discount_all_percent_label" for="discount_all_percent">';
 							echo lang('reserve_global_reserve_discount').': ';
 							echo '</label>';
@@ -358,92 +326,91 @@
 							echo form_submit('submit_discount_form',lang('common_submit'),'class="btn btn-primary"');
 							?>
 							</form>
-		
+
 						</li>
 					</ul>
-				<?php } ?>							
+				<?php } ?>
 						</div>
-						
-						
+
+
 						<?php
-						if (!$this->config->item('hide_customer_recent_sales') && isset($customer))
+						if (!$this->config->item('hide_customer_recent_reserve') && isset($customer))
 						{
 						?>
 						<div class="row hidden-xs">
-							<h1><?php echo lang('reserve_recent_sales').' '.H($customer);?></h1>	
-							<table id="recent_sales" class="table">
+							<h1><?php echo lang('reserve_recent_reserve').' '.H($customer);?></h1>
+							<table id="recent_reserve" class="table">
 								<tr>
-									<th align="center"><?php echo lang('items_date');?></th>
+									<th align="center"><?php echo lang('bedrooms_date');?></th>
 									<th align="center"><?php echo lang('reports_payments');?></th>
-									<th align="center"><?php echo lang('reports_items_purchased');?></th>
+									<th align="center"><?php echo lang('reports_bedrooms_purchased');?></th>
 									<th align="center"><?php echo lang('reserve_receipt');?></th>
 								</tr>
-								
-								<?php foreach($recent_sales as $sale) {?>
+
+								<?php foreach($recent_reserve as $reserve) {?>
 									<tr>
-										<td align="center"><?php echo date(get_date_format().' @ '.get_time_format(), strtotime($sale['sale_time']));?></td>
-										<td align="center"><?php echo $sale['payment_type'];?></td>
-										<td align="center"><?php echo to_quantity($sale['items_purchased']);?></td>
-										<td align="center"><?php echo anchor('sales/receipt/'.$sale['sale_id'], lang('reserve_receipt'), array('target' =>'_blank')); ?></td>
+										<td align="center"><?php echo date(get_date_format().' @ '.get_time_format(), strtotime($reserve['reserve_time']));?></td>
+										<td align="center"><?php echo $reserve['payment_type'];?></td>
+										<td align="center"><?php echo to_quantity($reserve['bedrooms_purchased']);?></td>
+										<td align="center"><?php echo anchor('reserve/receipt/'.$reserve['reserve_id'], lang('reserve_receipt'), array('target' =>'_blank')); ?></td>
 									</tr>
 								<?php } ?>
 							</table>
 						</div>
-						<?php	
+						<?php
 						}
-						?>	
+						?>
 
 					</div>
 					<!-- Right small box  -->
-				<div class="col-md-3 sale_register_rightbox">
+				<div class="col-md-3 reserve_register_rightbox">
 					<ul class="list-group">
 						<li class="list-group-item nopadding">
 							<!-- Cancel and suspend buttons -->
-							<div <?php if(count($cart) > 0){ echo "class='sale_form_main'";}?>>
+							<div <?php if(count($cart) > 0){ echo "class='reserve_form_main'";}?>>
 								<?php if(count($cart) > 0){ ?>
-								<?php echo form_open("sales/cancel_sale",array('id'=>'cancel_reserve_form', 'autocomplete'=> 'off')); ?>
+								<?php echo form_open("reserve/cancel_reserve",array('id'=>'cancel_reserve_form', 'autocomplete'=> 'off')); ?>
 								<?php if ($mode != 'store_account_payment') { ?>
-									<input type="button" class="btn btn-warning warning-buttons" id="suspend_reserve_button" value="<?php echo lang('reserve_suspend_sale');?>" />
 									<input type="button" class="btn btn-warning warning-buttons" id="layaway_reserve_button" style="display: none;" value="<?php echo lang('reserve_layaway');?>" />
 									<input type="button" class="btn btn-warning warning-buttons" id="estimate_reserve_button" style="display: none;" value="<?php echo lang('reserve_estimate');?>" />
 								<?php } ?>
-								<input type="button" class="btn btn-danger button_dangers" id="cancel_reserve_button" value="<?php echo lang('reserve_cancel_sale');?>" />
+								<input type="button" class="btn btn-danger button_dangers" id="cancel_reserve_button" value="<?php echo lang('reserve_cancel_reserve');?>" />
 							</form>
 							<?php } ?>
 						</div>
 					</li>
-					<li class="list-group-item item_tier">
+					<li class="list-group-item room_tier">
 						<!-- Customer info starts here-->
-						<h5 class="customer-basic-information"><?php if(isset($customer)) 
+						<h5 class="customer-basic-information"><?php if(isset($customer))
 							{
-							 	echo lang('customers_basic_information'); 
-							} 
-							else 
-							{ 
-								if ($this->config->item('require_customer_for_sale'))
+							 	echo lang('customers_basic_information');
+							}
+							else
+							{
+								if ($this->config->item('require_customer_for_reserve'))
 								{
-									echo lang('reserve_select_customer_required');									
+									echo lang('reserve_select_customer_required');
 								}
 								else
 								{
 									echo lang('reserve_select_customer');
 								}
-							} 
+							}
 							?>
 							</h5>
 						<div class="row nomargin">
 						<div class="clearfix" id="customer_info_shell">
-							<?php if(isset($customer)) { 
+							<?php if(isset($customer)) {
 								$full_width_col = "full_width_imporant";
 								if ($avatar != '' )
 								{
 								 $full_width_col = "";
 								?>
-									
+
 									<div id="customer-avatar">
 										<img src='<?php echo $avatar; ?>' alt="Customer" class=' img-polaroid ' width="100px;" />
 									</div>
-							<?php	
+							<?php
 								}
 							?>
 								<div id="customer-info" class=" <?php echo $full_width_col?>">
@@ -467,26 +434,26 @@
 										} ?>
 									</ul>
 								</div>
-						<?php										
+						<?php
 							echo anchor("customers/view/$customer_id/1", lang('common_edit'),  array('id' => 'edit_customer','class'=>'none btn-sm btn-primary ','title'=>lang('customers_update'))).'';
-							echo ''.anchor("sales/delete_customer", lang('reserve_detach'),array('id' => 'delete_customer','class'=>'btn-sm btn-warning'));
-							
+							echo ''.anchor("reserve/delete_customer", lang('reserve_detach'),array('id' => 'delete_customer','class'=>'btn-sm btn-warning'));
+
 							?>
 							</div>
-							
-							
-							
+
+
+
 					<?php
 						}
 						else
 							{ ?>
-						<?php echo form_open("sales/select_customer",array('id'=>'select_customer_form', 'autocomplete'=> 'off')); ?>
+						<?php echo form_open("reserve/select_customer",array('id'=>'select_customer_form', 'autocomplete'=> 'off')); ?>
 						<?php echo form_input(array('name'=>'customer','id'=>'customer','size'=>'30','value'=>lang('reserve_start_typing_customer_name'), 'placeholder'=>lang('reserve_start_typing_customer_name'),  'accesskey' => 'c'));?>
 					</form>
 					<div id="add_customer_info">
 							<div id="common_or" class="common_or">
 								<?php echo lang('common_or'); ?>
-								<?php 
+								<?php
 								echo anchor("customers/view/-1/1",
 									"<div class='small_button'> <span>".lang('reserve_new_customer')."</span> </div>", array('class'=>'btn btn-primary none','title'=>lang('reserve_new_customer'), 'id' => 'new-customer'));
 								?>
@@ -494,24 +461,6 @@
 					</div>
 
 						<?php }
-						
-						if (count($tiers) > 1) 
-						{
-							echo "<div class=\"tiers_main clear\">";
-							echo '<h3 class="items_tiers">'.lang('items_tiers'),'</h3>';
-							// margin: 12px 0px 0px 12px;
-							if ($this->Employee->has_module_action_permission('sales', 'edit_reserve_price', $this->Employee->get_logged_in_employee_info()->person_id))
-							{								
-								echo form_dropdown('tier_id', $tiers, $selected_tier_id, 'id="tier_id"');
-							}
-							else
-							{
-								echo "<div class='item_tier_no_edit text-info'>: ".H($tiers[$selected_tier_id])."</div>";
-							}
-							echo "<div class=\"clear\"></div>";
-							echo "</div>";
-							 
-						}
 						?>
 					</div>
 				</div>
@@ -520,11 +469,11 @@
 				</li>
 				<li class="list-group-item nopadding">
 
-					<div id='sale_details'>
-						<table id="sales_items" class="table">
+					<div id='reserve_details'>
+						<table id="reserve_bedrooms" class="table">
 							<tr class="warning">
-								<td class="left"><?php echo lang('reserve_items_in_cart'); ?>:</td>
-								<td class="right"><?php echo $items_in_cart; ?></td>
+								<td class="left"><?php echo lang('reserve_bedrooms_in_cart'); ?>:</td>
+								<td class="right"><?php echo $bedrooms_in_cart; ?></td>
 							</tr>
 							<?php foreach($payments as $payment) {?>
 							<?php if (strpos($payment['payment_type'], lang('reserve_giftcard'))!== FALSE) {?>
@@ -542,16 +491,16 @@
 							<?php foreach($taxes as $name=>$value) { ?>
 							<tr class="color1">
 								<td class="left">
-									
-									<?php if (!$is_tax_inclusive && $this->Employee->has_module_action_permission('sales', 'delete_taxes', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
-										<?php echo anchor("sales/delete_tax/".rawurlencode($name),'['.lang('common_delete').']', array('class' => 'delete_tax'));?></span>
+
+									<?php if (!$is_tax_inclusive && $this->Employee->has_module_action_permission('reserve', 'delete_taxes', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
+										<?php echo anchor("reserve/delete_tax/".rawurlencode($name),'['.lang('common_delete').']', array('class' => 'delete_tax'));?></span>
 									<?php } ?>
 									<?php echo $name; ?>:</td>
 								<td class="right"><?php echo to_currency($value); ?></td>
 							</tr>
 							<?php }; ?>
 							<tr class="success">
-								<td ><h3 class="sales_totals"><?php echo lang('reserve_total'); ?>:</h3></td>
+								<td ><h3 class="reserve_totals"><?php echo lang('reserve_total'); ?>:</h3></td>
 								<td ><h3 class="currency_totals"><?php echo to_currency($total); ?></h3></td>
 							</tr>
 						</table>
@@ -562,7 +511,7 @@
 
 				<li class="list-group-item nopadding">
 					<?php
-					// Only show this part if there are Items already in the sale.
+					// Only show this part if there are Items already in the reserve.
 					if(count($cart) > 0){ ?>
 
 					<div id="Payment_Types">
@@ -588,7 +537,7 @@
 									{
 										?>
 										<tr class="warning">
-											<td id="pt_delete"><?php echo anchor("sales/delete_payment/$payment_id",'['.lang('common_delete').']', array('class' => 'delete_payment'));?></td>
+											<td id="pt_delete"><?php echo anchor("reserve/delete_payment/$payment_id",'['.lang('common_delete').']', array('class' => 'delete_payment'));?></td>
 											<td id="pt_type"><?php echo $payment['payment_type']; ?> </td>
 											<td id="pt_amount"><?php echo  to_currency($payment['payment_amount']); ?>  </td>
 										</tr>
@@ -602,7 +551,7 @@
 							<table id="amount_due" class="table">
 								<tr class="<?php if($payments_cover_total) { echo 'success'; } else { echo 'error'; }?>">
 									<td>
-										<h4 class="sales_amount_due"><?php echo lang('reserve_amount_due'); ?>:</h4>
+										<h4 class="reserve_amount_due"><?php echo lang('reserve_amount_due'); ?>:</h4>
 									</td>
 									<td>
 										<h3 class="amount_dues"><?php echo to_currency($amount_due); ?></h3>
@@ -611,7 +560,7 @@
 							</table>
 							<?php if ($customer_required_check) { ?>
 							<div id="make_payment">
-								<?php echo form_open("sales/add_payment",array('id'=>'add_payment_form', 'autocomplete'=> 'off')); ?>
+								<?php echo form_open("reserve/add_payment",array('id'=>'add_payment_form', 'autocomplete'=> 'off')); ?>
 								<table id="make_payment_table" class="table">
 									<tr id="mpt_top">
 										<td id="add_payment_text">
@@ -630,7 +579,7 @@
 
 										</td>
 									</tr>
-									 
+
 								</table>
 							</form>
 						</div>
@@ -657,20 +606,20 @@
 
 					// Only show this part if there is at least one payment entered.
 					if((count($payments) > 0 && !is_reserve_integrated_cc_processing())){?>
-					<div id="finish_sale">
-						<?php echo form_open("sales/complete",array('id'=>'finish_reserve_form', 'autocomplete'=> 'off')); ?>
-						<?php							 
+					<div id="finish_reserve">
+						<?php echo form_open("reserve/complete",array('id'=>'finish_reserve_form', 'autocomplete'=> 'off')); ?>
+						<?php
 						if ($payments_cover_total && $customer_required_check)
 						{
-							echo "<input type='button' class='btn btn-success btn-large btn-block' id='finish_reserve_button' value='".lang('reserve_complete_sale')."' />";
+							echo "<input type='button' class='btn btn-success btn-large btn-block' id='finish_reserve_button' value='".lang('reserve_complete_reserve')."' />";
 						}
 						?>
 					</div>
 				</form>
 				<?php }elseif(count($payments) > 0)	{?>
-				<div id="finish_sale">
-					<?php echo form_open("sales/start_cc_processing",array('id'=>'finish_reserve_form', 'autocomplete'=> 'off')); ?>
-					<?php							 
+				<div id="finish_reserve">
+					<?php echo form_open("reserve/start_cc_processing",array('id'=>'finish_reserve_form', 'autocomplete'=> 'off')); ?>
+					<?php
 					if ($payments_cover_total && $customer_required_check || (is_reserve_integrated_cc_processing()))
 					{
 						echo "<input type='button' class='btn btn-success btn-large btn-block' id='finish_reserve_button' value='".lang('reserve_process_credit_card')."' />";
@@ -679,7 +628,7 @@
 						{
 							if (isset($customer) && $customer_cc_token && $customer_cc_preview)
 							{
-								echo '<label id="sales_use_saved_cc_label" for="use_saved_cc_info" class="checkbox">';
+								echo '<label id="reserve_use_saved_cc_label" for="use_saved_cc_info" class="checkbox">';
 								echo lang('reserve_use_saved_cc_info'). ' '.$customer_cc_preview;
 								echo form_checkbox(array(
 									'name'=>'use_saved_cc_info',
@@ -691,7 +640,7 @@
 							}
 							elseif(isset($customer))
 							{
-								echo '<label id="sales_save_credit_card_label" for="save_credit_card_info" class="checkbox">';
+								echo '<label id="reserve_save_credit_card_label" for="save_credit_card_info" class="checkbox">';
 								echo lang('reserve_save_credit_card_info');
 								echo form_checkbox(array(
 									'name'=>'save_credit_card_info',
@@ -709,7 +658,7 @@
 			<?php }
 			?>
 			<?php
-			if($this->reserve_lib->get_change_reserve_id()) {
+			if($this->reserve_lib->get_change_reservation_id()) {
 				echo '<br />';
 				echo '<label id="comment_label" for="change_reserve_date_enable" class="checkbox">';
 				echo lang('reserve_change_date');
@@ -724,7 +673,7 @@
 				?>
 				<div class="field_row clearfix" id="change_reserve_input">
 					<div class='form_field'>
-					
+
 					<div id="change_reserve_date_picker" class="input-group date datepicker" data-date="date(get_date_format())" data-date-format=<?php echo json_encode(get_js_date_format()); ?>>
 						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 
@@ -734,11 +683,11 @@
 						'size'=>'8',
 						 'value'=> date(get_date_format())
 						)
-					);?>       
+					);?>
 					</div>
 					</div>
 				</div>
-				<?php 
+				<?php
 			}
 		} ?>
 			</li>
@@ -764,11 +713,11 @@
 <div class="row ">
 
 
-<?php if ($this->config->item('select_sales_person_during_sale')) {?>
+<?php if ($this->config->item('select_reserve_person_during_reserve')) {?>
 
 	<div class="col-md-3">
-			<div id="select_sales_person">
-		<?php echo lang('reserve_sales_person'); ?>: 
+			<div id="select_reserve_person">
+		<?php echo lang('reserve_reserve_person'); ?>:
 		<?php echo form_dropdown('sold_by_employee_id', $employees, $selected_sold_by_employee_id, 'class="form-control" id="sold_by_employee_id"'); ?>
 	</div>
 	</div>
@@ -784,7 +733,7 @@ if ($this->Register->count_all($this->Employee->get_logged_in_employee_current_l
 ?>
 <div class="col-md-3">
 	<div style="margin-left: 10px;margin-top: 20px;" id="switch_register_container">
-		<?php echo lang('locations_register_name');?>: <?php echo anchor('sales/clear_register', $reg_name);?>
+		<?php echo lang('locations_register_name');?>: <?php echo anchor('reserve/clear_register', $reg_name);?>
 	</div>
 	</div>
 <?php
@@ -823,7 +772,7 @@ if ($this->Register->count_all($this->Employee->get_logged_in_employee_current_l
 	</script>
 <?php } ?>
 <script type="text/javascript" language="javascript">
-	
+
 $(document).keydown(function(event)
 {
 		var mycode = event.keyCode;
@@ -840,7 +789,7 @@ $(document).keydown(function(event)
 			$("#finish_reserve_button").focus();
 			event.originalEvent.keyCode = 0;
 		}
-	
+
 		//F7
 		if (mycode == 118)
 		{
@@ -848,14 +797,14 @@ $(document).keydown(function(event)
 			$("#payment_types").focus();
 			event.originalEvent.keyCode = 0;
 		}
-	
+
 		//ESC
 		if (mycode == 27)
 		{
 	    	$("#cancel_reserve_button").focus();
-		}	
+		}
 	});
-	
+
     var submitting = false;
 	$(document).ready(function()
 	{
@@ -878,13 +827,13 @@ $(document).keydown(function(event)
 			e.preventDefault();
 			$( "#keyboardhelp" ).dialog( "open" );
 		});
-		
-		
+
+
 		//Here just in case the loader doesn't go away for some reason
 		$("#ajax-loader").hide();
-		
+
 		<?php if (!$this->agent->is_mobile()) { ?>
-			<?php if (!$this->config->item('auto_focus_on_item_after_reserve_and_receiving'))
+			<?php if (!$this->config->item('auto_focus_on_room_after_reserve_and_receiving'))
 			{
 			?>
 				if (last_focused_id && last_focused_id != 'item' && $('#'+last_focused_id).is('input[type=text]'))
@@ -892,29 +841,29 @@ $(document).keydown(function(event)
 					$('#'+last_focused_id).focus();
 					$('#'+last_focused_id).select();
 				}
-				<?php 
+				<?php
 			}
 			else
 			{
 			?>
-				setTimeout(function(){$('#item').focus();}, 10);	
+				setTimeout(function(){$('#item').focus();}, 10);
 			<?php
 			}
 			?>
-			$(document).focusin(function(event) 
+			$(document).focusin(function(event)
 			{
 				last_focused_id = $(event.target).attr('id');
 			});
-		<?php } ?>	
-		$('#mode_form, #select_customer_form, #add_payment_form, .line_item_form, #discount_all_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});
-		$('#add_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
+		<?php } ?>
+		$('#mode_form, #select_customer_form, #add_payment_form, .line_room_form, #discount_all_form').ajaxForm({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
+		$('#add_room_form').ajaxForm({target: "#register_container", beforeSubmit: reserveBeforeSubmit, success: itemScannedSuccess});
 		$("#cart_contents input").change(function()
 		{
-			$(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+			$(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
 		});
 
 		$( "#item" ).autocomplete({
-			source: '<?php echo site_url("sales/item_search"); ?>',
+			source: '<?php echo site_url("reserve/room_search"); ?>',
 			delay: 300,
 			autoFocus: false,
 			minLength: 1,
@@ -922,7 +871,7 @@ $(document).keydown(function(event)
 			{
 				event.preventDefault();
 				$( "#item" ).val(ui.item.value);
-				$('#add_item_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
+				$('#add_room_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit, success: itemScannedSuccess});
 			}
 		});
 
@@ -932,14 +881,14 @@ $(document).keydown(function(event)
 		});
 
 		$( "#customer" ).autocomplete({
-			source: '<?php echo site_url("sales/customer_search"); ?>',
+			source: '<?php echo site_url("reserve/customer_search"); ?>',
 			delay: 300,
 			autoFocus: false,
 			minLength: 1,
 			select: function(event, ui)
 			{
 				$("#customer").val(ui.item.value);
-				$('#select_customer_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+				$('#select_customer_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
 			}
 		});
 
@@ -947,48 +896,48 @@ $(document).keydown(function(event)
 		{
 			$(this).attr('value',<?php echo json_encode(lang('reserve_start_typing_customer_name')); ?>);
 		});
-		
+
 		$('#item').blur(function()
 		{
-			$(this).attr('value',<?php echo json_encode(lang('reserve_start_typing_item_name')); ?>);
+			$(this).attr('value',<?php echo json_encode(lang('reserve_start_typing_room_name')); ?>);
 		});
-		
+
 		//Datepicker change
 		$('#change_reserve_date_picker').datepicker().on('changeDate', function(ev) {
-			$.post('<?php echo site_url("sales/set_change_reserve_date");?>', {change_reserve_date: $('#change_reserve_date').val()});			
+			$.post('<?php echo site_url("reserve/set_change_reserve_date");?>', {change_reserve_date: $('#change_reserve_date').val()});
 		});
-		
+
 		//Input change
 		$("#change_reserve_date").change(function(){
-			$.post('<?php echo site_url("sales/set_change_reserve_date");?>', {change_reserve_date: $('#change_reserve_date').val()});			
+			$.post('<?php echo site_url("reserve/set_change_reserve_date");?>', {change_reserve_date: $('#change_reserve_date').val()});
 		});
 
-		$('#change_reserve_date_enable').change(function() 
+		$('#change_reserve_date_enable').change(function()
 		{
-			$.post('<?php echo site_url("sales/set_change_reserve_date_enable");?>', {change_reserve_date_enable: $('#change_reserve_date_enable').is(':checked') ? '1' : '0'});
+			$.post('<?php echo site_url("reserve/set_change_reserve_date_enable");?>', {change_reserve_date_enable: $('#change_reserve_date_enable').is(':checked') ? '1' : '0'});
 		});
 
-		$('#comment').change(function() 
+		$('#comment').change(function()
 		{
-			$.post('<?php echo site_url("sales/set_comment");?>', {comment: $('#comment').val()});
+			$.post('<?php echo site_url("reserve/set_comment");?>', {comment: $('#comment').val()});
 		});
-						
-		$('#show_comment_on_receipt').change(function() 
+
+		$('#show_comment_on_receipt').change(function()
 		{
-			$.post('<?php echo site_url("sales/set_comment_on_receipt");?>', {show_comment_on_receipt:$('#show_comment_on_receipt').is(':checked') ? '1' : '0'});
+			$.post('<?php echo site_url("reserve/set_comment_on_receipt");?>', {show_comment_on_receipt:$('#show_comment_on_receipt').is(':checked') ? '1' : '0'});
 		});
 
-		$('#email_receipt').change(function() 
-		{	
-			$.post('<?php echo site_url("sales/set_email_receipt");?>', {email_receipt: $('#email_receipt').is(':checked') ? '1' : '0'});
-		});
-
-		$('#save_credit_card_info').change(function() 
+		$('#email_receipt').change(function()
 		{
-			$.post('<?php echo site_url("sales/set_save_credit_card_info");?>', {save_credit_card_info:$('#save_credit_card_info').is(':checked') ? '1' : '0'});
+			$.post('<?php echo site_url("reserve/set_email_receipt");?>', {email_receipt: $('#email_receipt').is(':checked') ? '1' : '0'});
 		});
 
-		$('#change_reserve_date_enable').is(':checked') ? $("#change_reserve_input").show() : $("#change_reserve_input").hide(); 
+		$('#save_credit_card_info').change(function()
+		{
+			$.post('<?php echo site_url("reserve/set_save_credit_card_info");?>', {save_credit_card_info:$('#save_credit_card_info').is(':checked') ? '1' : '0'});
+		});
+
+		$('#change_reserve_date_enable').is(':checked') ? $("#change_reserve_input").show() : $("#change_reserve_input").hide();
 
 		$('#change_reserve_date_enable').click(function() {
 			if( $(this).is(':checked')) {
@@ -998,9 +947,9 @@ $(document).keydown(function(event)
 			}
 		});
 
-		$('#use_saved_cc_info').change(function() 
+		$('#use_saved_cc_info').change(function()
 		{
-			$.post('<?php echo site_url("sales/set_use_saved_cc_info");?>', {use_saved_cc_info:$('#use_saved_cc_info').is(':checked') ? '1' : '0'});
+			$.post('<?php echo site_url("reserve/set_use_saved_cc_info");?>', {use_saved_cc_info:$('#use_saved_cc_info').is(':checked') ? '1' : '0'});
 		});
 
 		$("#finish_reserve_button").click(function()
@@ -1008,48 +957,48 @@ $(document).keydown(function(event)
 			//Prevent double submission of form
 			$("#finish_reserve_button").hide();
 			$("#register_container").mask(<?php echo json_encode(lang('common_wait')); ?>);
-			
+
 			<?php if ($is_over_credit_limit) { ?>
 				if (!confirm(<?php echo json_encode(lang('reserve_over_credit_limit_warning')); ?>))
 				{
 					//Bring back submit and unmask if fail to confirm
 					$("#finish_reserve_button").show();
 					$("#register_container").unmask();
-					
+
 					return;
 				}
 			<?php } ?>
-				
+
 			<?php if(!$payments_cover_total) { ?>
-				
+
 				if (!confirm(<?php echo json_encode(lang('reserve_payment_not_cover_total_confirmation')); ?>))
 				{
 					//Bring back submit and unmask if fail to confirm
 					$("#finish_reserve_button").show();
 					$("#register_container").unmask();
-					
+
 					return;
 				}
 			<?php } ?>
-			
-			<?php if (!$this->config->item('disable_confirmation_sale')) { ?>
-				if (confirm(<?php echo json_encode(lang("sales_confirm_finish_sale")); ?>))
+
+			<?php if (!$this->config->item('disable_confirmation_reserve')) { ?>
+				if (confirm(<?php echo json_encode(lang("reserve_confirm_finish_reserve")); ?>))
 				{
 					<?php } ?>
-															
+
 					if ($("#comment").val())
 					{
-						$.post('<?php echo site_url("sales/set_comment");?>', {comment: $('#comment').val()}, function()
+						$.post('<?php echo site_url("reserve/set_comment");?>', {comment: $('#comment').val()}, function()
 						{
-							$('#finish_reserve_form').submit();						
-						});						
+							$('#finish_reserve_form').submit();
+						});
 					}
 					else
 					{
-						$('#finish_reserve_form').submit();						
+						$('#finish_reserve_form').submit();
 					}
-					
-					<?php if (!$this->config->item('disable_confirmation_sale')) { ?>
+
+					<?php if (!$this->config->item('disable_confirmation_reserve')) { ?>
 					}
 					else
 					{
@@ -1059,23 +1008,23 @@ $(document).keydown(function(event)
 					}
 					<?php } ?>
 				});
-				
+
 		$("#suspend_reserve_button").click(function()
 		{
 			$(this).hide();
 			$("#layaway_reserve_button").show();
 			$("#estimate_reserve_button").show();
 		});
-		
+
 		$("#layaway_reserve_button").click(function()
 		{
-			if (confirm(<?php echo json_encode(lang("sales_confirm_suspend_sale")); ?>))
+			if (confirm(<?php echo json_encode(lang("reserve_confirm_suspend_reserve")); ?>))
 			{
-				$.post('<?php echo site_url("sales/set_comment");?>', {comment: $('#comment').val()}, function() {
-					<?php if ($this->config->item('show_receipt_after_suspending_sale')) { ?>
-						window.location = '<?php echo site_url("sales/suspend"); ?>';
+				$.post('<?php echo site_url("reserve/set_comment");?>', {comment: $('#comment').val()}, function() {
+					<?php if ($this->config->item('show_receipt_after_suspending_reserve')) { ?>
+						window.location = '<?php echo site_url("reserve/suspend"); ?>';
 						<?php }else { ?>
-							$("#register_container").load('<?php echo site_url("sales/suspend"); ?>');
+							$("#register_container").load('<?php echo site_url("reserve/suspend"); ?>');
 					<?php } ?>
 				});
 			}
@@ -1083,13 +1032,13 @@ $(document).keydown(function(event)
 
 		$("#estimate_reserve_button").click(function()
 		{
-			if (confirm(<?php echo json_encode(lang("sales_confirm_suspend_sale")); ?>))
+			if (confirm(<?php echo json_encode(lang("reserve_confirm_suspend_reserve")); ?>))
 			{
-				$.post('<?php echo site_url("sales/set_comment");?>', {comment: $('#comment').val()}, function() {
-					<?php if ($this->config->item('show_receipt_after_suspending_sale')) { ?>
-						window.location = '<?php echo site_url("sales/suspend/2"); ?>';
+				$.post('<?php echo site_url("reserve/set_comment");?>', {comment: $('#comment').val()}, function() {
+					<?php if ($this->config->item('show_receipt_after_suspending_reserve')) { ?>
+						window.location = '<?php echo site_url("reserve/suspend/2"); ?>';
 					<?php }else { ?>
-						$("#register_container").load('<?php echo site_url("sales/suspend/2"); ?>');
+						$("#register_container").load('<?php echo site_url("reserve/suspend/2"); ?>');
 					<?php } ?>
 				});
 			}
@@ -1098,64 +1047,64 @@ $(document).keydown(function(event)
 
 		$("#cancel_reserve_button").click(function()
 		{
-			if (confirm(<?php echo json_encode(lang("sales_confirm_cancel_sale")); ?>))
+			if (confirm(<?php echo json_encode(lang("reserve_confirm_cancel_reserve")); ?>))
 			{
-				$('#cancel_reserve_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+				$('#cancel_reserve_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
 			}
 		});
 
 		$("#add_payment_button").click(function()
 		{
-			$('#add_payment_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+			$('#add_payment_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
 		});
 
 		$("#payment_types").change(checkPaymentTypeGiftcard).ready(checkPaymentTypeGiftcard);
 		$('#mode').change(function()
 		{
 			if ($(this).val() == "store_account_payment") { // Hiding the category grid
-				$('#show_hide_grid_wrapper, #category_item_selection_wrapper').fadeOut();
+				$('#show_hide_grid_wrapper, #category_room_selection_wrapper').fadeOut();
 			}else { // otherwise, show the categories grid
 				$('#show_hide_grid_wrapper, #show_grid').fadeIn();
 				$('#hide_grid').fadeOut();
 			}
-			$('#mode_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+			$('#mode_form').ajaxSubmit({target: "#register_container", beforeSubmit: reserveBeforeSubmit});
 		});
 
-		$('.delete_item, .delete_payment, #delete_customer, .delete_tax').click(function(event)
+		$('.delete_room, .delete_payment, #delete_customer, .delete_tax').click(function(event)
 		{
 			event.preventDefault();
-			$("#register_container").load($(this).attr('href'));	
+			$("#register_container").load($(this).attr('href'));
 		});
 
 		$("#tier_id").change(function()
 		{
-			$.post('<?php echo site_url("sales/set_tier_id");?>', {tier_id: $(this).val()}, function()
+			$.post('<?php echo site_url("reserve/set_tier_id");?>', {tier_id: $(this).val()}, function()
 			{
-				$("#register_container").load('<?php echo site_url("sales/reload"); ?>');
+				$("#register_container").load('<?php echo site_url("reserve/reload"); ?>');
 			});
 		});
 
 		$("#sold_by_employee_id").change(function()
 		{
-			$.post('<?php echo site_url("sales/set_sold_by_employee_id");?>', {sold_by_employee_id: $(this).val()}, function()
+			$.post('<?php echo site_url("reserve/set_sold_by_employee_id");?>', {sold_by_employee_id: $(this).val()}, function()
 			{
-				$("#register_container").load('<?php echo site_url("sales/reload"); ?>');
+				$("#register_container").load('<?php echo site_url("reserve/reload"); ?>');
 			});
 		});
 
 		$("input[type=text]").not(".description").click(function() {
 			$(this).select();
 		});
-		
+
 		if(screen.width <= 768) //set the colspan on page load
-		{ 
+		{
 			jQuery('td.edit_description').attr('colspan', '2');
 			jQuery('td.edit_serialnumber').attr('colspan', '4');
 		}
-		
+
 		 $(window).resize(function() {
 			var wi = $(window).width();
-	 
+
 			if (wi <= 768){
 				jQuery('td.edit_description').attr('colspan', '2');
 				jQuery('td.edit_serialnumber').attr('colspan', '4');
@@ -1164,23 +1113,23 @@ $(document).keydown(function(event)
 				jQuery('td.edit_description').attr('colspan', '4');
 				jQuery('td.edit_serialnumber').attr('colspan', '2');
 			}
-		});     
-			
+		});
+
 		$("#new-customer").click(function()
 		{
-			$("body").mask(<?php echo json_encode(lang('common_wait')); ?>);			
+			$("body").mask(<?php echo json_encode(lang('common_wait')); ?>);
 		});
 	});
- 
+
 function checkPaymentTypeGiftcard()
 {
 	if ($("#payment_types").val() == <?php echo json_encode(lang('reserve_giftcard')); ?>)
 	{
 		$("#amount_tendered").val('');
-		
+
 		<?php if (!$this->agent->is_mobile()) { ?>
 			$("#amount_tendered").focus();
-		<?php } ?> 
+		<?php } ?>
 		<?php if (!$this->config->item('disable_giftcard_detection')) { ?>
 		giftcard_swipe_field($("#amount_tendered"));
 		<?php
@@ -1189,7 +1138,7 @@ function checkPaymentTypeGiftcard()
 	}
 }
 
-function salesBeforeSubmit(formData, jqForm, options)
+function reserveBeforeSubmit(formData, jqForm, options)
 {
 	if (submitting)
 	{

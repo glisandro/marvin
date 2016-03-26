@@ -1,6 +1,6 @@
 <?php $this->load->view("partial/header"); ?>
 	<div id="content-header" class="hidden-print">
-		<h1 ><i class="fa fa-pencil"></i> <?php echo lang('sales_register') ?></h1>
+		<h1 ><i class="fa fa-pencil"></i> <?php echo lang('reserve_register') ?></h1>
 	</div>
 
 	<div id="breadcrumb" class="hidden-print">
@@ -12,25 +12,25 @@
 			<div class="widget-box">
 				<div class="widget-title">
 					<span class="icon">
-						<i class="fa fa-align-justify"></i>									
+						<i class="fa fa-align-justify"></i>
 					</span>
-					<h5><?php echo lang("sales_delete_successful"); ?></h5>
+					<h5><?php echo lang("reserve_delete_successful"); ?></h5>
 				</div>
 				<div class="widget-content nopadding">
 					<br />
 					<br />
-					
-<?php 
+
+<?php
 if ($success)
 {
 ?>
-	<h1 class="text-warning text-center"><?php echo lang('sales_delete_successful'); ?></h1>
-<?php	
+	<h1 class="text-warning text-center"><?php echo lang('reserve_delete_successful'); ?></h1>
+<?php
 }
 else
 {
 ?>
-	<h1 class="text-error"><?php echo lang('sales_delete_unsuccessful'); ?></h1>
+	<h1 class="text-error"><?php echo lang('reserve_delete_unsuccessful'); ?></h1>
 <?php
 }
 ?>

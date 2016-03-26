@@ -64,7 +64,7 @@ $autoload['libraries'] = array('database','form_validation','session','user_agen
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('form','url','table','text','currency', 'html', 'download', 'base64', 'mailchimp', 'language', 'file', 'assets', 'sale','items','item_kits','breadcrumb','demo', 'spreadsheet');
+$autoload['helper'] = array('form','url','table','text','currency', 'html', 'download', 'base64', 'mailchimp', 'language', 'file', 'assets', 'sale','items','item_kits','breadcrumb','demo', 'spreadsheet','reservation','bedrooms');
 
 /*
 | -------------------------------------------------------------------
@@ -108,7 +108,7 @@ $autoload['language'] = array('common', 'config', 'customers', 'employees', 'err
 |
 */
 
-$autoload['model'] = array('Appconfig','Person','Customer','Area','Employee','Module','Item', 'Item_taxes', 'Sale', 'Supplier','Inventory','Receiving','Giftcard', 'Item_kit', 'Item_kit_taxes', 'Item_kit_items', 'Appfile','Item_location', 'Module_action','Location','Item_location_taxes', 'Tier', 'Item_kit_location','Item_kit_location_taxes', 'Item_taxes_finder', 'Item_kit_taxes_finder', 'Register', 'Additional_item_numbers','Expense','Category','Cash_withdrawal','Room','Room_taxes','Additional_room_numbers','Room_location','Room_location_taxes','Room_taxes_finder','Bedrooms_inventory');
+$autoload['model'] = array('Appconfig','Person','Customer','Area','Employee','Module','Item', 'Item_taxes', 'Sale', 'Supplier','Inventory','Receiving','Giftcard', 'Item_kit', 'Item_kit_taxes', 'Item_kit_items', 'Appfile','Item_location', 'Module_action','Location','Item_location_taxes', 'Tier', 'Item_kit_location','Item_kit_location_taxes', 'Item_taxes_finder', 'Item_kit_taxes_finder', 'Register', 'Additional_item_numbers','Expense','Category','Cash_withdrawal','Room','Room_taxes','Additional_room_numbers','Room_location','Room_location_taxes','Room_taxes_finder','Bedrooms_inventory','Room_kit','Reservation');
 
 /* End of file autoload.php */
 /* Location: ./application/config/autoload.php */
