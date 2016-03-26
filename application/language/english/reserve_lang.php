@@ -188,4 +188,5 @@ $lang['reserve_nickels'] = '5 Centavos';
 $lang['reserve_pennies'] = '1 Centavo';
 $lang['reserve_denomination'] = 'Denominación';
 $lang['reserve_over_credit_limit_warning'] = 'El cliente es por encima del límite de crédito. ¿Seguro que deseas completar la reserva?';
+$lang['reserve_sales_person'] = 'Persona de las ventas';
 ?>

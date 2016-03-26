@@ -717,7 +717,7 @@
 
 	<div class="col-md-3">
 			<div id="select_sales_person">
-		<?php echo lang('reserve_reserve_person'); ?>:
+		<?php echo lang('reserve_sales_person'); ?>:
 		<?php echo form_dropdown('sold_by_employee_id', $employees, $selected_sold_by_employee_id, 'class="form-control" id="sold_by_employee_id"'); ?>
 	</div>
 	</div>
