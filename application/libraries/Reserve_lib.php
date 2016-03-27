@@ -65,6 +65,27 @@ class Reserve_lib
 	{
 		return $this->CI->session->userdata('change_reserve_date') ? $this->CI->session->userdata('change_reserve_date') : '';
 	}
+	
+	function get_star_date()
+	{
+		return $this->CI->session->userdata('star_date') ? $this->CI->session->userdata('star_date') : '';
+	}
+	
+	function get_end_date()
+	{
+		return $this->CI->session->userdata('end_date') ? $this->CI->session->userdata('end_date') : '';
+	}
+	
+	function clear_star_date()
+	{
+		$this->CI->session->unset_userdata('star_date');
+	}
+	
+	function clear_end_date()
+	{
+		$this->CI->session->unset_userdata('end_date');
+	}
+	
 	function clear_change_reserve_date()
 	{
 		$this->CI->session->unset_userdata('change_reserve_date');
@@ -253,6 +274,12 @@ class Reserve_lib
 	function set_sold_by_employee_id($sold_by_employee_id)
 	{
 		$this->CI->session->set_userdata('sold_by_employee_id', $sold_by_employee_id);
+	}
+	
+	function set_star_and_end_date($star_date, $end_date)
+	{
+		$this->CI->session->set_userdata('star_date', $star_date);
+		$this->CI->session->set_userdata('end_date', $end_date);
 	}
 
 	function clear_sold_by_employee_id()
@@ -878,6 +905,8 @@ class Reserve_lib
 		$this->clear_deleted_taxes();
 		$this->clear_cc_info();
 		$this->clear_sold_by_employee_id();
+		$this->clear_star_date();
+		$this->clear_end_date();
 	}
 
 	function save_current_reserve_state()

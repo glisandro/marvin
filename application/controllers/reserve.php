@@ -231,6 +231,11 @@ class Reserve extends Secure_area
 	{
  	  $this->reserve_lib->set_sold_by_employee_id($this->input->post('sold_by_employee_id') ? $this->input->post('sold_by_employee_id') : NULL);
 	}
+	
+	function set_star_and_end_date()
+	{
+ 	  $this->reserve_lib->set_star_and_end_date($this->input->post('star_date') ? $this->input->post('star_date') : NULL, $this->input->post('end_date') ? $this->input->post('end_date') : NULL);
+	}
 
 
 	//Alain Multiple Payments
@@ -447,7 +452,9 @@ class Reserve extends Secure_area
 		$data['discount_exists'] = $this->_does_discount_exists($data['cart']);
 		$masked_account = $this->session->userdata('masked_account') ? $this->session->userdata('masked_account') : '';
 		$card_issuer = $this->session->userdata('card_issuer') ? $this->session->userdata('card_issuer') : '';
-
+		$data['star_date'] = $this->session->userdata('star_date') ? $this->session->userdata('star_date') : '';
+		$data['end_date'] = $this->session->userdata('end_date') ? $this->session->userdata('end_date') : '';
+		
 		if ($masked_account)
 		{
 			$cc_payment_id = current($this->reserve_lib->get_payment_ids(lang('reserve_credit')));
@@ -503,7 +510,7 @@ class Reserve extends Secure_area
 		$data['store_account_payment'] = $this->reserve_lib->get_mode() == 'store_account_payment' ? 1 : 0;
 
 		//SAVE sale to database
-		$reservation_id_raw = $this->Reservation->save($data['cart'], $customer_id, $employee_id, $sold_by_employee_id, $data['comment'],$data['show_comment_on_receipt'],$data['payments'], $suspended_change_reservation_id, 0,$data['ref_no'],$data['auth_code'], $data['change_reserve_date'], $data['balance'], 0);
+		$reservation_id_raw = $this->Reservation->save($data['cart'], $customer_id, $employee_id, $sold_by_employee_id, $data['comment'],$data['show_comment_on_receipt'],$data['payments'], $suspended_change_reservation_id, 0,$data['ref_no'],$data['auth_code'], $data['change_reserve_date'], $data['balance'], 0, $data['star_date'], $data['end_date']);
 		$data['reservation_id']=$this->config->item('sale_prefix').' '.$reservation_id_raw;
 		$data['reservation_id_raw']=$reservation_id_raw;
 
@@ -934,6 +941,8 @@ class Reserve extends Secure_area
 		$data['change_reserve_date'] = $this->reserve_lib->get_change_reserve_date();
 		$data['selected_tier_id'] = $this->reserve_lib->get_selected_tier_id();
 		$data['is_over_credit_limit'] = false;
+		$data['star_date'] = $this->reserve_lib->get_star_date();
+		$data['end_date'] = $this->reserve_lib->get_end_date();
 
 		$employees = array('' => lang('common_not_set'));
 

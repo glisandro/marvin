@@ -236,7 +236,7 @@ class Reservation extends CI_Model
 		return $success;
 	}
 
-	function save($bedrooms,$customer_id,$employee_id, $sold_by_employee_id, $comment,$show_comment_on_receipt,$payments,$reservation_id=false, $suspended = 0, $cc_ref_no = '', $auth_code = '', $change_reservation_date=false,$balance=0, $store_account_payment = 0)
+	function save($bedrooms,$customer_id,$employee_id, $sold_by_employee_id, $comment,$show_comment_on_receipt,$payments,$reservation_id=false, $suspended = 0, $cc_ref_no = '', $auth_code = '', $change_reservation_date=false,$balance=0, $store_account_payment = 0, $star_date, $end_date)
 	{
 		//we need to check the sale library for deleted taxes during sale
 		$this->load->library('reserve_lib');
@@ -266,6 +266,8 @@ class Reservation extends CI_Model
 			'location_id' => $this->Employee->get_logged_in_employee_current_location_id(),
 			'register_id' => $this->Employee->get_logged_in_employee_current_register_id(),
 			'store_account_payment' => $store_account_payment,
+			'star_date' => date('Y-m-d', strtotime($star_date)),
+			'end_date' => date('Y-m-d', strtotime($end_date))
 		);
 
 		if($reservation_id)

@@ -15,7 +15,7 @@
 <div class="clear"></div>
 	<!--Left small box-->
 	<div class="row">
-		<div class="sales_register_leftbox col-md-9">
+		<div class="sale_register_leftbox col-md-9">
 			<div class="row forms-area">
 				<?php if ($mode != 'store_account_payment') { ?>
 						<div class="col-md-12 no-padd">
@@ -33,6 +33,7 @@
 								</form>
 							</div>
 						</div>
+						
 					<?php } ?>
 
 
@@ -465,8 +466,46 @@
 					</div>
 				</div>
 				</li>
+				
 				<li class="list-group-item spacing">
 				</li>
+		
+				<li class="list-group-item star_end_date">
+		
+						<h5>Seleccione fecha de reserva (Obligatorio)</h5>
+						<label for="start_date" class="">Inicio:</label>
+						<div id="star_date_picker" class="input-group date datepicker" data-date="<?php echo (isset($star_date) && $star_date) ?  date(get_date_format(), strtotime($star_date)) : ''; ?>" data-date-format=<?php echo json_encode(get_js_date_format()); ?>>
+							<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+	
+						<?php echo form_input(array(
+							'name'=>'star_date',
+							'id' => 'star_date',
+							'size'=>'8',
+							 'value'=>  (isset($star_date) && $star_date) ?  date(get_date_format(), strtotime($star_date)) : date(get_date_format())
+							)
+						);?>
+						</div>
+		
+	
+						<label for="end_date" class="">Fin:</label>	
+						<div id="end_date_picker" class="input-group date datepicker" data-date="<?php echo (isset($end_date) && $end_date) ?  date(get_date_format(), strtotime($end_date)) : ''; ?>" data-date-format=<?php echo json_encode(get_js_date_format()); ?>>
+							<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+	
+						<?php echo form_input(array(
+							'name'=>'end_date',
+							'id' => 'end_date',
+							'size'=>'8',
+							 'value'=> (isset($end_date) && $end_date) ?  date(get_date_format(), strtotime($end_date)) : date(get_date_format())
+							)
+						);?>
+						</div>
+									
+
+				</li>
+				
+				<li class="list-group-item spacing">
+				</li>
+				
 				<li class="list-group-item nopadding">
 
 					<div id='reserve_details'>
@@ -660,7 +699,7 @@
 			<?php
 			if($this->reserve_lib->get_change_reservation_id()) {
 				echo '<br />';
-				echo '<label id="comment_label" for="change_reserve_date_enable" class="checkbox">';
+				echo '<label id="comment_label" for="s_enable" class="checkbox">';
 				echo lang('reserve_change_date');
 				echo form_checkbox(array(
 					'name'=>'change_reserve_date_enable',
@@ -689,7 +728,7 @@
 				</div>
 				<?php
 			}
-		} ?>
+		}?>
 			</li>
 		</ul>
 
@@ -911,6 +950,16 @@ $(document).keydown(function(event)
 		$("#change_reserve_date").change(function(){
 			$.post('<?php echo site_url("reserve/set_change_reserve_date");?>', {change_reserve_date: $('#change_reserve_date').val()});
 		});
+		
+		//Datepicker change
+		$('#star_date_picker, #end_date_picker').datepicker().on('changeDate', function(ev) {
+			$.post('<?php echo site_url("reserve/set_star_and_end_date");?>', {star_date: $('#star_date').val(), end_date: $('#end_date').val()});
+		});
+
+		//Input change
+		$("#star_date, #end_date").change(function(){
+			$.post('<?php echo site_url("reserve/set_star_and_end_date");?>', {star_date: $('#star_date').val(), end_date: $('#end_date').val()});
+		});
 
 		$('#change_reserve_date_enable').change(function()
 		{
@@ -1087,6 +1136,14 @@ $(document).keydown(function(event)
 		$("#sold_by_employee_id").change(function()
 		{
 			$.post('<?php echo site_url("reserve/set_sold_by_employee_id");?>', {sold_by_employee_id: $(this).val()}, function()
+			{
+				$("#register_container").load('<?php echo site_url("reserve/reload"); ?>');
+			});
+		});
+		
+		$("#star_date, #end_date").change(function()
+		{
+			$.post('<?php echo site_url("reserve/set_star_and_end_date");?>', {star_date: $("#star_date").val(), end_date: $("#end_date").val()}, function()
 			{
 				$("#register_container").load('<?php echo site_url("reserve/reload"); ?>');
 			});
